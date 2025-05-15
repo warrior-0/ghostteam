@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang='ko'>
+<head>
+  <meta charset='UTF-8'>
+  <title>홈 | 괴담지옥</title>
+  <link rel='stylesheet' href='style.css'>
+</head>
+<body>
+  <header>
+    <div class='logo'>괴담지옥</div>
+    <nav>
+      <a href='index.html'>홈</a>
+      <a href='urban.html'>괴담</a>
+      <a href='about.html'>정보</a>
+      <a href='community.html'>커뮤니티</a>
+    </nav>
+  </header>
+  <main>
+    <h1>👻 최신 괴담 미리보기</h1>
+    <section>
+      <div class='story' data-score='4.3'>
+        <strong>🩸 폐가에서 들리는 아이의 웃음소리</strong>
+        <div class='stars'></div>
+      </div>
+      <div class='story' data-score='3.7'>
+        <strong>🪞 거울 속 또 다른 나</strong>
+        <div class='stars'></div>
+      </div>
+      <div class='story' data-score='2.5'>
+        <strong>🧍 캠핑장에서 실종된 친구</strong>
+        <div class='stars'></div>
+      </div>
+    </section>
+  </main>
+  <footer>&copy; 2025 괴담지옥</footer>
+  <script>
+    document.querySelectorAll('.story').forEach(el => {
+      const score = parseFloat(el.getAttribute('data-score'));
+      const percent = (score / 5) * 100;
+      const starsEl = el.querySelector('.stars');
+      starsEl.style.position = 'relative';
+      starsEl.style.display = 'inline-block';
+      starsEl.style.color = 'crimson';
+      starsEl.innerHTML = `
+        <span style="opacity: 0.2;">★★★★★</span>
+        <span style="position: absolute; top: 0; left: 0; overflow: hidden; white-space: nowrap; width: ${percent}%;">★★★★★</span>
+      `;
+    });
+  </script>
+</body>
+</html>

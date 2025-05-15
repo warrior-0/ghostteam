@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang='ko'>
+<head>
+  <meta charset='UTF-8'>
+  <title>괴담 | 괴담지옥</title>
+  <link rel='stylesheet' href='style.css'>
+</head>
+<body>
+<header>
+  <div class='logo'>괴담지옥</div>
+  <nav>
+    <a href='index.html'>홈</a>
+    <a href='urban.html'>괴담</a>
+    <a href='about.html'>정보</a>
+    <a href='community.html'>커뮤니티</a>
+  </nav>
+</header>
+<main>
+  <h1>🕯️ 괴담 모음</h1>
+  <label for="filter">분류:</label>
+  <select id="filter">
+    <option value="all">전체</option>
+    <option value="korea">한국 괴담</option>
+    <option value="foreign">해외 괴담</option>
+    <option value="true">실화 기반</option>
+    <option value="user">사용자 제보</option>
+  </select>
+  <div class='story-list'>
+    <div class='story' data-type='korea'>🇰🇷 폐가의 정체불명 인형</div>
+    <div class='story' data-type='foreign'>🇺🇸 텍사스 외딴집의 괴소문</div>
+    <div class='story' data-type='true'>📖 공장 야간 근무 중 실제 경험담</div>
+    <div class='story' data-type='user'>👤 내가 겪은 새벽의 발소리</div>
+  </div>
+</main>
+<footer>&copy; 2025 괴담지옥</footer>
+<script>
+  const filter = document.getElementById('filter');
+  const stories = document.querySelectorAll('.story-list .story');
+  filter.addEventListener('change', () => {
+    const type = filter.value;
+    stories.forEach(story => {
+      story.style.display = (type === 'all' || story.dataset.type === type) ? 'block' : 'none';
+    });
+  });
+</script>
+</body>
+</html>
