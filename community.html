@@ -1,10 +1,19 @@
 <!DOCTYPE html>
-<html lang='ko'>
+<html lang="ko">
 <head>
-  <meta charset='UTF-8'><title>커뮤니티 | 괴담지옥</title><link rel='stylesheet' href='style.css'>
+  <meta charset="UTF-8" />
+  <title>커뮤니티 | 괴담지옥</title>
+  <link rel="stylesheet" href="style.css" />
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getFirestore, collection, addDoc, getDocs, getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import {
+      getFirestore,
+      collection,
+      addDoc,
+      getDocs,
+      query,
+      orderBy,
+    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyAjHwHbHlCi4vgv-Ma0-3kqt-M3SLI_oF4",
@@ -19,6 +28,7 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
+    // 게시글 불러오기
     async function loadPosts() {
       const postsRef = collection(db, "posts");
       const snapshot = await getDocs(postsRef);
@@ -32,9 +42,10 @@
       });
     }
 
+    // 게시글 작성
     async function createPost() {
-      const title = document.getElementById("title").value;
-      const content = document.getElementById("content").value;
+      const title = document.getElementById("title").value.trim();
+      const content = document.getElementById("content").value.trim();
       if (!title || !content) {
         alert("제목과 내용을 입력해주세요.");
         return;
@@ -42,43 +53,21 @@
       await addDoc(collection(db, "posts"), {
         title,
         content,
-        created: new Date()
+        created: new Date(),
       });
       alert("작성 완료!");
       window.location.reload();
     }
-    window.onload = loadPosts;
-    window.createPost = createPost;
-  <form id="commentForm">
-    <input type="text" id="username" placeholder="닉네임" required />
-    <textarea id="comment" placeholder="댓글 입력" required></textarea>
-    <button type="submit">댓글 달기</button>
-   </form>
-  <ul id="commentList"></ul>
-  
-  // 댓글 제출
-    document.getElementById("commentForm").addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const username = document.getElementById("username").value;
-      const comment = document.getElementById("comment").value;
 
-      await addDoc(collection(db, "comments"), {
-        username,
-        comment,
-        timestamp: new Date()
-      });
-
-      alert("댓글 등록 완료!");
-      loadComments();
-    });
-
-    // 댓글 표시
+    // 댓글 불러오기
     async function loadComments() {
-      const querySnapshot = await getDocs(collection(db, "comments"));
+      const commentsRef = collection(db, "comments");
+      // 댓글 시간 순 정렬 예시
+      const q = query(commentsRef, orderBy("timestamp", "desc"));
+      const snapshot = await getDocs(q);
       const list = document.getElementById("commentList");
       list.innerHTML = "";
-
-      querySnapshot.forEach((doc) => {
+      snapshot.forEach((doc) => {
         const data = doc.data();
         const li = document.createElement("li");
         li.textContent = `${data.username}: ${data.comment}`;
@@ -86,57 +75,113 @@
       });
     }
 
-    loadComments();
-  import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    // 댓글 작성 핸들러
+    async function submitComment(event) {
+      event.preventDefault();
+      const username = document.getElementById("username").value.trim();
+      const comment = document.getElementById("comment").value.trim();
+      if (!username || !comment) {
+        alert("닉네임과 댓글을 입력해주세요.");
+        return;
+      }
+      await addDoc(collection(db, "comments"), {
+        username,
+        comment,
+        timestamp: new Date(),
+      });
+      alert("댓글 등록 완료!");
+      document.getElementById("commentForm").reset();
+      loadComments();
+    }
 
-// firestore 가져오기
-const db = getFirestore(app);
+    // 평점 제출
+    async function submitRating() {
+      const ratingValue = parseFloat(document.getElementById("rating").value);
+      if (isNaN(ratingValue) || ratingValue < 1 || ratingValue > 5) {
+        alert("1.0 이상 5.0 이하의 평점을 입력해주세요.");
+        return;
+      }
+      await addDoc(collection(db, "ratings"), {
+        rating: ratingValue,
+        timestamp: new Date(),
+      });
+      alert("평점이 저장되었습니다!");
+      document.getElementById("rating").value = "";
+      calculateAverageRating();
+    }
 
-// 평점 제출 함수
-async function submitRating() {
-  const ratingValue = parseFloat(document.getElementById("rating").value);
-  if (ratingValue < 1 || ratingValue > 5) {
-    alert("1.0 이상 5.0 이하의 평점을 입력해주세요.");
-    return;
-  }
+    // 평균 평점 계산
+    async function calculateAverageRating() {
+      const ratingsRef = collection(db, "ratings");
+      const snapshot = await getDocs(ratingsRef);
+      let sum = 0;
+      let count = 0;
+      snapshot.forEach((doc) => {
+        sum += doc.data().rating;
+        count++;
+      });
+      const avg = count === 0 ? 0 : (sum / count).toFixed(1);
+      document.getElementById("avgRating").innerText = `현재 평균 평점: ${avg}점`;
+    }
 
-  await addDoc(collection(db, "ratings"), {
-    rating: ratingValue,
-    timestamp: new Date()
-  });
-
-  alert("평점이 저장되었습니다!");
-  calculateAverageRating();
-}
-
-// 평균 평점 계산 함수
-async function calculateAverageRating() {
-  const querySnapshot = await getDocs(collection(db, "ratings"));
-  let sum = 0;
-  let count = 0;
-
-  querySnapshot.forEach((doc) => {
-    sum += doc.data().rating;
-    count++;
-  });
-
-  const avg = count === 0 ? 0 : (sum / count).toFixed(1);
-  document.getElementById("avgRating").innerText = `현재 평균 평점: ${avg}점`;
-}
-
-calculateAverageRating();
-
-</script>
+    window.onload = () => {
+      loadPosts();
+      loadComments();
+      calculateAverageRating();
+      document
+        .getElementById("commentForm")
+        .addEventListener("submit", submitComment);
+      document
+        .getElementById("ratingSubmit")
+        .addEventListener("click", submitRating);
+      document
+        .getElementById("postCreateBtn")
+        .addEventListener("click", createPost);
+    };
+  </script>
 </head>
 <body>
-<header><div class='logo'>괴담지옥</div><nav><a href='index.html'>홈</a><a href='urban.html'>괴담</a><a href='about.html'>정보</a><a href='community.html'>커뮤니티</a></nav></header>
-<main><h1>💬 커뮤니티</h1><p>자유 게시판, 인기 글 모음</p></main>
-  <h2>새 글 작성</h2>
-  <input type="text" id="title" placeholder="제목"><br>
-  <textarea id="content" placeholder="내용"></textarea><br>
-  <button onclick="createPost()">작성</button>
+  <header>
+    <div class="logo">괴담지옥</div>
+    <nav>
+      <a href="index.html">홈</a>
+      <a href="urban.html">괴담</a>
+      <a href="about.html">정보</a>
+      <a href="community.html">커뮤니티</a>
+    </nav>
+  </header>
+  <main>
+    <h1>💬 커뮤니티</h1>
+    <p>자유 게시판, 인기 글 모음</p>
 
-  <h2>게시글 목록</h2>
-  <ul id="postList"></ul>
-<footer>&copy; 2025 괴담지옥</footer>
-</body></html>
+    <h2>새 글 작성</h2>
+    <input type="text" id="title" placeholder="제목" /><br />
+    <textarea id="content" placeholder="내용"></textarea><br />
+    <button id="postCreateBtn">작성</button>
+
+    <h2>게시글 목록</h2>
+    <ul id="postList"></ul>
+
+    <h2>댓글</h2>
+    <form id="commentForm">
+      <input type="text" id="username" placeholder="닉네임" required />
+      <textarea id="comment" placeholder="댓글 입력" required></textarea>
+      <button type="submit">댓글 달기</button>
+    </form>
+    <ul id="commentList"></ul>
+
+    <h2>평점 남기기</h2>
+    <input
+      type="number"
+      id="rating"
+      placeholder="1.0 ~ 5.0"
+      step="0.1"
+      min="1"
+      max="5"
+    />
+    <button id="ratingSubmit">평점 제출</button>
+    <p id="avgRating">현재 평균 평점: 0점</p>
+  </main>
+  <footer>&copy; 2025 괴담지옥</footer>
+</body>
+</html>
