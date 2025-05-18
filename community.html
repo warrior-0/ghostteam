@@ -201,26 +201,32 @@
 
     // 댓글 작성
     async function submitComment(event) {
-      event.preventDefault();
-      if (!currentUser) {
-        alert("로그인 후 댓글 작성 가능합니다.");
-        return;
-      }
-      const comment = document.getElementById("comment").value.trim();
-      if (!comment) {
-        alert("댓글을 입력해주세요.");
-        return;
-      }
-      await addDoc(collection(db, "comments"), {
-        comment,
-        username: currentUser.email,
-        uid: currentUser.uid,
-        timestamp: new Date(),
-      });
-      alert("댓글 등록 완료!");
-      document.getElementById("commentForm").reset();
-      loadComments();
-    }
+  event.preventDefault();
+  if (!currentUser) {
+    alert("로그인 후 댓글 작성 가능합니다.");
+    return;
+  }
+
+  const comment = document.getElementById("comment").value.trim();
+  if (!comment) {
+    alert("댓글을 입력해주세요.");
+    return;
+  }
+
+  const userDoc = await getDoc(doc(db, "users", currentUser.uid));
+  const nickname = userDoc.exists() ? userDoc.data().nickname : "익명";
+
+  await addDoc(collection(db, "comments"), {
+    comment,
+    authorname: nickname,
+    uid: currentUser.uid,
+    timestamp: new Date(),
+  });
+
+  alert("댓글 등록 완료!");
+  document.getElementById("commentForm").reset();
+  loadComments();
+}
 
     // 댓글 수정
     function editComment(commentId, data) {
