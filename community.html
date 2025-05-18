@@ -140,7 +140,10 @@
         alert("제목과 내용을 입력해주세요.");
         return;
       }
-      await addDoc(collection(db, "posts"), {
+       // 유저 정보 불러오기 (닉네임)
+        const userDoc = await getDoc(doc(db, "users", currentUser.uid));
+        const nickname = userDoc.exists() ? userDoc.data().nickname : "
+        await addDoc(collection(db, "posts"), {
         title,
         content,
         authorUid: currentUser.uid,
