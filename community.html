@@ -13,7 +13,17 @@
       getDocs,
       query,
       orderBy,
+      doc,
+      updateDoc,
+      deleteDoc
     } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import {
+      getAuth,
+      createUserWithEmailAndPassword,
+      signInWithEmailAndPassword,
+      onAuthStateChanged,
+      signOut
+    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyAjHwHbHlCi4vgv-Ma0-3kqt-M3SLI_oF4",
@@ -27,6 +37,48 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
+    const auth = getAuth();
+
+    let currentUser = null;
+
+    // 로그인 상태 확인
+    onAuthStateChanged(auth, (user) => {
+      const status = document.getElementById("authStatus");
+      if (user) {
+        currentUser = user;
+        status.innerHTML = `로그인됨: ${user.email} <button onclick="logout()">로그아웃</button>`;
+      } else {
+        currentUser = null;
+        status.innerHTML = `로그인 필요`;
+      }
+    });
+
+    window.register = async () => {
+      const email = document.getElementById("regEmail").value;
+      const password = document.getElementById("regPassword").value;
+      try {
+        await createUserWithEmailAndPassword(auth, email, password);
+        alert("회원가입 성공");
+      } catch (error) {
+        alert(error.message);
+      }
+    };
+
+    window.login = async () => {
+      const email = document.getElementById("loginEmail").value;
+      const password = document.getElementById("loginPassword").value;
+      try {
+        await signInWithEmailAndPassword(auth, email, password);
+        alert("로그인 성공");
+      } catch (error) {
+        alert(error.message);
+      }
+    };
+
+    window.logout = async () => {
+      await signOut(auth);
+      alert("로그아웃 완료");
+    };
 
     async function loadPosts() {
       const postsRef = collection(db, "posts");
@@ -36,52 +88,78 @@
       snapshot.forEach((doc) => {
         const data = doc.data();
         const item = document.createElement("li");
-        item.innerHTML = `<a href="post.html?id=${doc.id}">${data.title}</a>`;
+        item.innerHTML = `<strong>${data.title}</strong> - ${data.email}<br>${data.content}`;
+        if (currentUser && currentUser.email === data.email) {
+          item.innerHTML += `<button onclick="editPost('${doc.id}', '${data.title}', '${data.content}')">수정</button>`;
+        }
         list.appendChild(item);
       });
     }
 
+    window.editPost = async (id, oldTitle, oldContent) => {
+      const newTitle = prompt("새 제목: ", oldTitle);
+      const newContent = prompt("새 내용: ", oldContent);
+      if (newTitle && newContent) {
+        await updateDoc(doc(db, "posts", id), { title: newTitle, content: newContent });
+        alert("수정 완료");
+        loadPosts();
+      }
+    };
+
     async function createPost() {
       const title = document.getElementById("title").value.trim();
       const content = document.getElementById("content").value.trim();
-      if (!title || !content) {
-        alert("제목과 내용을 입력해주세요.");
+      if (!title || !content || !currentUser) {
+        alert("로그인 후 제목과 내용을 입력하세요.");
         return;
       }
       await addDoc(collection(db, "posts"), {
         title,
         content,
+        email: currentUser.email,
         created: new Date(),
       });
       alert("작성 완료!");
-      window.location.reload();
+      loadPosts();
     }
 
     async function loadComments() {
-      const commentsRef = collection(db, "comments");
-      const q = query(commentsRef, orderBy("timestamp", "desc"));
+      const q = query(collection(db, "comments"), orderBy("timestamp", "desc"));
       const snapshot = await getDocs(q);
       const list = document.getElementById("commentList");
       list.innerHTML = "";
       snapshot.forEach((doc) => {
         const data = doc.data();
         const li = document.createElement("li");
-        li.textContent = `${data.username}: ${data.comment}`;
+        li.innerHTML = `${data.username}: ${data.comment}`;
+        if (currentUser && data.uid === currentUser.uid) {
+          li.innerHTML += ` <button onclick="editComment('${doc.id}', '${data.comment}')">수정</button>`;
+        }
         list.appendChild(li);
       });
     }
+
+    window.editComment = async (id, oldComment) => {
+      const newComment = prompt("댓글 수정: ", oldComment);
+      if (newComment) {
+        await updateDoc(doc(db, "comments", id), { comment: newComment });
+        alert("댓글 수정 완료");
+        loadComments();
+      }
+    };
 
     async function submitComment(event) {
       event.preventDefault();
       const username = document.getElementById("username").value.trim();
       const comment = document.getElementById("comment").value.trim();
-      if (!username || !comment) {
-        alert("닉네임과 댓글을 입력해주세요.");
+      if (!username || !comment || !currentUser) {
+        alert("로그인 후 닉네임과 댓글을 입력하세요.");
         return;
       }
       await addDoc(collection(db, "comments"), {
         username,
         comment,
+        uid: currentUser.uid,
         timestamp: new Date(),
       });
       alert("댓글 등록 완료!");
@@ -105,8 +183,7 @@
     }
 
     async function calculateAverageRating() {
-      const ratingsRef = collection(db, "ratings");
-      const snapshot = await getDocs(ratingsRef);
+      const snapshot = await getDocs(collection(db, "ratings"));
       let sum = 0;
       let count = 0;
       snapshot.forEach((doc) => {
@@ -121,15 +198,9 @@
       loadPosts();
       loadComments();
       calculateAverageRating();
-      document
-        .getElementById("commentForm")
-        .addEventListener("submit", submitComment);
-      document
-        .getElementById("ratingSubmit")
-        .addEventListener("click", submitRating);
-      document
-        .getElementById("postCreateBtn")
-        .addEventListener("click", createPost);
+      document.getElementById("commentForm").addEventListener("submit", submitComment);
+      document.getElementById("ratingSubmit").addEventListener("click", submitRating);
+      document.getElementById("postCreateBtn").addEventListener("click", createPost);
     };
   </script>
 </head>
@@ -142,10 +213,25 @@
       <a href="about.html">정보</a>
       <a href="community.html">커뮤니티</a>
     </nav>
+    <div id="authStatus"></div>
   </header>
   <main>
     <h1>💬 커뮤니티</h1>
     <p>자유 게시판, 인기 글 모음</p>
+
+    <div>
+      <h3>회원가입</h3>
+      <input type="email" id="regEmail" placeholder="이메일">
+      <input type="password" id="regPassword" placeholder="비밀번호">
+      <button onclick="register()">회원가입</button>
+    </div>
+
+    <div>
+      <h3>로그인</h3>
+      <input type="email" id="loginEmail" placeholder="이메일">
+      <input type="password" id="loginPassword" placeholder="비밀번호">
+      <button onclick="login()">로그인</button>
+    </div>
 
     <h2>새 글 작성</h2>
     <input type="text" id="title" placeholder="제목" /><br />
@@ -164,14 +250,7 @@
     <ul id="commentList"></ul>
 
     <h2>평점 남기기</h2>
-    <input
-      type="number"
-      id="rating"
-      placeholder="1.0 ~ 5.0"
-      step="0.1"
-      min="1"
-      max="5"
-    />
+    <input type="number" id="rating" placeholder="1.0 ~ 5.0" step="0.1" min="1" max="5" />
     <button id="ratingSubmit">평점 제출</button>
     <p id="avgRating">현재 평균 평점: 0점</p>
   </main>
