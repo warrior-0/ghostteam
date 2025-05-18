@@ -1,8 +1,65 @@
 <!DOCTYPE html>
 <html lang='ko'>
-<head><meta charset='UTF-8'><title>커뮤니티 | 괴담지옥</title><link rel='stylesheet' href='style.css'></head>
+<head>
+  <meta charset='UTF-8'><title>커뮤니티 | 괴담지옥</title><link rel='stylesheet' href='style.css'>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_AUTH_DOMAIN",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_BUCKET",
+      messagingSenderId: "YOUR_SENDER_ID",
+      appId: "YOUR_APP_ID"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    async function loadPosts() {
+      const postsRef = collection(db, "posts");
+      const snapshot = await getDocs(postsRef);
+      const list = document.getElementById("postList");
+      list.innerHTML = "";
+      snapshot.forEach((doc) => {
+        const data = doc.data();
+        const item = document.createElement("li");
+        item.innerHTML = `<a href="post.html?id=${doc.id}">${data.title}</a>`;
+        list.appendChild(item);
+      });
+    }
+
+    async function createPost() {
+      const title = document.getElementById("title").value;
+      const content = document.getElementById("content").value;
+      if (!title || !content) {
+        alert("제목과 내용을 입력해주세요.");
+        return;
+      }
+      await addDoc(collection(db, "posts"), {
+        title,
+        content,
+        created: new Date()
+      });
+      alert("작성 완료!");
+      window.location.reload();
+    }
+
+    window.onload = loadPosts;
+    window.createPost = createPost;
+  </script>
+</head>
 <body>
 <header><div class='logo'>괴담지옥</div><nav><a href='index.html'>홈</a><a href='urban.html'>괴담</a><a href='about.html'>정보</a><a href='community.html'>커뮤니티</a></nav></header>
 <main><h1>💬 커뮤니티</h1><p>자유 게시판, 인기 글 모음</p></main>
+  <h2>새 글 작성</h2>
+  <input type="text" id="title" placeholder="제목"><br>
+  <textarea id="content" placeholder="내용"></textarea><br>
+  <button onclick="createPost()">작성</button>
+
+  <h2>게시글 목록</h2>
+  <ul id="postList"></ul>
 <footer>&copy; 2025 괴담지옥</footer>
 </body></html>
