@@ -4,6 +4,27 @@
   <meta charset='UTF-8'>
   <title>홈 | 괴담지옥</title>
   <link rel='stylesheet' href='style.css'>
+  <!-- Firebase SDK -->
+<script type="module">
+  // Firebase 라이브러리 가져오기
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-analytics.js";
+
+  // Firebase 설정
+  const firebaseConfig = {
+    apiKey: "AIzaSyAjHwHbHlCi4vgv-Ma0-3kqt-M3SLI_oF4",
+    authDomain: "ghost-38f07.firebaseapp.com",
+    projectId: "ghost-38f07",
+    storageBucket: "ghost-38f07.firebasestorage.app",
+    messagingSenderId: "776945022976",
+    appId: "1:776945022976:web:105e545d39f12b5d0940e5",
+    measurementId: "G-B758ZC971V"
+  };
+
+  // Firebase 초기화
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+</script>
 </head>
 <body>
   <header>
