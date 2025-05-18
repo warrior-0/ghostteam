@@ -115,7 +115,7 @@
         const data = doc.data();
         const item = document.createElement("li");
         item.innerHTML = `
-          <strong>${data.title}</strong> - 작성자: ${data.authorname || "익명"}
+          <strong>${data.title}</strong> - 작성자: ${data.authorName || "익명"}
           <p>${data.content}</p>
         `;
         if (currentUser && data.authorUid === currentUser.uid) {
