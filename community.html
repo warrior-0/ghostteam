@@ -130,32 +130,36 @@
 
     // 게시글 작성
     async function createPost() {
-      if (!currentUser) {
-        alert("로그인 후 작성 가능합니다.");
-        return;
-      }
-      const title = document.getElementById("title").value.trim();
-      const content = document.getElementById("content").value.trim();
-      if (!title || !content) {
-        alert("제목과 내용을 입력해주세요.");
-        return;
-      }
-       // 유저 정보 불러오기 (닉네임)
-        const userDoc = await getDoc(doc(db, "users", currentUser.uid));
-        const nickname = userDoc.exists() ? userDoc.data().nickname : "
-        await addDoc(collection(db, "posts"), {
-        title,
-        content,
-        authorUid: currentUser.uid,
-        authorEmail: currentUser.email,
-        authorName: currentUser.nickname,
-        created: new Date(),
-      });
-      alert("작성 완료!");
-      document.getElementById("title").value = "";
-      document.getElementById("content").value = "";
-      loadPosts();
-    }
+  if (!currentUser) {
+    alert("로그인 후 작성 가능합니다.");
+    return;
+  }
+
+  const title = document.getElementById("title").value.trim();
+  const content = document.getElementById("content").value.trim();
+  if (!title || !content) {
+    alert("제목과 내용을 입력해주세요.");
+    return;
+  }
+
+  const userDoc = await getDoc(doc(db, "users", currentUser.uid));
+  const nickname = userDoc.exists() ? userDoc.data().nickname : "익명";
+
+  await addDoc(collection(db, "posts"), {
+    title,
+    content,
+    authorUid: currentUser.uid,
+    authorEmail: currentUser.email,
+    authorname: nickname,
+    created: new Date(),
+  });
+
+  alert("작성 완료!");
+  document.getElementById("title").value = "";
+  document.getElementById("content").value = "";
+  loadPosts();
+}
+
 
     // 게시글 수정 (간단 예시, 수정 폼 띄우기)
     function editPost(postId, data) {
