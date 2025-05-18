@@ -44,6 +44,7 @@
 
     // 로그인 상태 감지 및 UI 업데이트
     onAuthStateChanged(auth, (user) => {
+      
       currentUser = user;
       if (user) {
         document.getElementById("userStatus").innerText = `로그인: ${user.email}`;
@@ -191,7 +192,7 @@ async function createPost() {
       snapshot.forEach((doc) => {
         const data = doc.data();
         const li = document.createElement("li");
-        li.innerHTML = `<strong>${data.authorname}</strong>: ${data.comment}`;
+        li.innerHTML = `<strong>${data.nickname}</strong>: ${data.comment}`;
         if (currentUser && data.uid === currentUser.uid) {
           const editBtn = document.createElement("button");
           editBtn.textContent = "수정";
