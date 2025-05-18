@@ -4,6 +4,12 @@
   <meta charset='UTF-8'>
   <title>홈 | 괴담지옥</title>
   <link rel='stylesheet' href='style.css'>
+   <form id="commentForm">
+    <input type="text" id="username" placeholder="닉네임" required />
+    <textarea id="comment" placeholder="댓글 입력" required></textarea>
+    <button type="submit">댓글 달기</button>
+   </form>
+  <ul id="commentList"></ul>
   <!-- Firebase SDK -->
 <script type="module">
   // Firebase 라이브러리 가져오기
