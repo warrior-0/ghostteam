@@ -129,7 +129,8 @@
     }
 
     // 게시글 작성
-    async function createPost() {
+    // 게시글 작성
+async function createPost() {
   if (!currentUser) {
     alert("로그인 후 작성 가능합니다.");
     return;
@@ -142,6 +143,7 @@
     return;
   }
 
+  // 유저 정보 불러오기 (닉네임)
   const userDoc = await getDoc(doc(db, "users", currentUser.uid));
   const nickname = userDoc.exists() ? userDoc.data().nickname : "익명";
 
@@ -150,7 +152,7 @@
     content,
     authorUid: currentUser.uid,
     authorEmail: currentUser.email,
-    authorname: nickname,
+    authorname: nickname, // 여기 이름을 일관성 있게 사용
     created: new Date(),
   });
 
@@ -159,6 +161,7 @@
   document.getElementById("content").value = "";
   loadPosts();
 }
+
 
 
     // 게시글 수정 (간단 예시, 수정 폼 띄우기)
