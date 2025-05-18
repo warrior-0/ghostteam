@@ -115,7 +115,7 @@
         const data = doc.data();
         const item = document.createElement("li");
         item.innerHTML = `
-          <strong>${data.title}</strong> - 작성자: ${data.authorname || "익명"}
+          <strong>${data.title}</strong> - 작성자: ${data.nickname || "익명"}
           <p>${data.content}</p>
         `;
         if (currentUser && data.authorUid === currentUser.uid) {
@@ -191,7 +191,7 @@ async function createPost() {
       snapshot.forEach((doc) => {
         const data = doc.data();
         const li = document.createElement("li");
-        li.innerHTML = `<strong>${data.authorName}</strong>: ${data.comment}`;
+        li.innerHTML = `<strong>${data.authorname}</strong>: ${data.comment}`;
         if (currentUser && data.uid === currentUser.uid) {
           const editBtn = document.createElement("button");
           editBtn.textContent = "수정";
