@@ -152,7 +152,7 @@ async function createPost() {
     content,
     authorUid: currentUser.uid,
     authorEmail: currentUser.email,
-    authorname: nickname, // 여기 이름을 일관성 있게 사용
+    authorName: nickname, // 여기 이름을 일관성 있게 사용
     created: new Date(),
   });
 
@@ -191,7 +191,7 @@ async function createPost() {
       snapshot.forEach((doc) => {
         const data = doc.data();
         const li = document.createElement("li");
-        li.innerHTML = `<strong>${data.authorname}</strong>: ${data.comment}`;
+        li.innerHTML = `<strong>${data.authorName}</strong>: ${data.comment}`;
         if (currentUser && data.uid === currentUser.uid) {
           const editBtn = document.createElement("button");
           editBtn.textContent = "수정";
@@ -221,7 +221,7 @@ async function createPost() {
 
   await addDoc(collection(db, "comments"), {
     comment,
-    authorname: nickname,
+    authorName: nickname,
     uid: currentUser.uid,
     timestamp: new Date(),
   });
