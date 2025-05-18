@@ -46,10 +46,106 @@
       alert("작성 완료!");
       window.location.reload();
     }
-
     window.onload = loadPosts;
     window.createPost = createPost;
-  </script>
+  <form id="commentForm">
+    <input type="text" id="username" placeholder="닉네임" required />
+    <textarea id="comment" placeholder="댓글 입력" required></textarea>
+    <button type="submit">댓글 달기</button>
+   </form>
+  <ul id="commentList"></ul>
+  <!-- Firebase SDK -->
+<script type="module">
+  // Firebase 라이브러리 가져오기
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-analytics.js";
+
+  // Firebase 설정
+  const firebaseConfig = {
+    apiKey: "AIzaSyAjHwHbHlCi4vgv-Ma0-3kqt-M3SLI_oF4",
+    authDomain: "ghost-38f07.firebaseapp.com",
+    projectId: "ghost-38f07",
+    storageBucket: "ghost-38f07.firebasestorage.app",
+    messagingSenderId: "776945022976",
+    appId: "1:776945022976:web:105e545d39f12b5d0940e5",
+    measurementId: "G-B758ZC971V"
+  };
+
+  // Firebase 초기화
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+  
+  // 댓글 제출
+    document.getElementById("commentForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const username = document.getElementById("username").value;
+      const comment = document.getElementById("comment").value;
+
+      await addDoc(collection(db, "comments"), {
+        username,
+        comment,
+        timestamp: new Date()
+      });
+
+      alert("댓글 등록 완료!");
+      loadComments();
+    });
+
+    // 댓글 표시
+    async function loadComments() {
+      const querySnapshot = await getDocs(collection(db, "comments"));
+      const list = document.getElementById("commentList");
+      list.innerHTML = "";
+
+      querySnapshot.forEach((doc) => {
+        const data = doc.data();
+        const li = document.createElement("li");
+        li.textContent = `${data.username}: ${data.comment}`;
+        list.appendChild(li);
+      });
+    }
+
+    loadComments();
+  import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+// firestore 가져오기
+const db = getFirestore(app);
+
+// 평점 제출 함수
+async function submitRating() {
+  const ratingValue = parseFloat(document.getElementById("rating").value);
+  if (ratingValue < 1 || ratingValue > 5) {
+    alert("1.0 이상 5.0 이하의 평점을 입력해주세요.");
+    return;
+  }
+
+  await addDoc(collection(db, "ratings"), {
+    rating: ratingValue,
+    timestamp: new Date()
+  });
+
+  alert("평점이 저장되었습니다!");
+  calculateAverageRating();
+}
+
+// 평균 평점 계산 함수
+async function calculateAverageRating() {
+  const querySnapshot = await getDocs(collection(db, "ratings"));
+  let sum = 0;
+  let count = 0;
+
+  querySnapshot.forEach((doc) => {
+    sum += doc.data().rating;
+    count++;
+  });
+
+  const avg = count === 0 ? 0 : (sum / count).toFixed(1);
+  document.getElementById("avgRating").innerText = `현재 평균 평점: ${avg}점`;
+}
+
+calculateAverageRating();
+
+</script>
 </head>
 <body>
 <header><div class='logo'>괴담지옥</div><nav><a href='index.html'>홈</a><a href='urban.html'>괴담</a><a href='about.html'>정보</a><a href='community.html'>커뮤니티</a></nav></header>
