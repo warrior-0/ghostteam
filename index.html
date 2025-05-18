@@ -30,6 +30,38 @@
   // Firebase 초기화
   const app = initializeApp(firebaseConfig);
   const analytics = getAnalytics(app);
+  
+  // 댓글 제출
+    document.getElementById("commentForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const username = document.getElementById("username").value;
+      const comment = document.getElementById("comment").value;
+
+      await addDoc(collection(db, "comments"), {
+        username,
+        comment,
+        timestamp: new Date()
+      });
+
+      alert("댓글 등록 완료!");
+      loadComments();
+    });
+
+    // 댓글 표시
+    async function loadComments() {
+      const querySnapshot = await getDocs(collection(db, "comments"));
+      const list = document.getElementById("commentList");
+      list.innerHTML = "";
+
+      querySnapshot.forEach((doc) => {
+        const data = doc.data();
+        const li = document.createElement("li");
+        li.textContent = `${data.username}: ${data.comment}`;
+        list.appendChild(li);
+      });
+    }
+
+    loadComments();
 </script>
 </head>
 <body>
