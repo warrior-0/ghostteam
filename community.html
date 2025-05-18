@@ -115,7 +115,7 @@
         const data = doc.data();
         const item = document.createElement("li");
         item.innerHTML = `
-          <strong>${data.title}</strong> - 작성자: ${data.authorName || "익명"}
+          <strong>${data.title}</strong> - 작성자: ${data.authorname || "익명"}
           <p>${data.content}</p>
         `;
         if (currentUser && data.authorUid === currentUser.uid) {
@@ -152,7 +152,7 @@ async function createPost() {
     content,
     authorUid: currentUser.uid,
     authorEmail: currentUser.email,
-    authorName: nickname, // 여기 이름을 일관성 있게 사용
+    authorname: nickname, // 여기 이름을 일관성 있게 사용
     created: new Date(),
   });
 
@@ -221,7 +221,7 @@ async function createPost() {
 
   await addDoc(collection(db, "comments"), {
     comment,
-    authorName: nickname,
+    authorname: nickname,
     uid: currentUser.uid,
     timestamp: new Date(),
   });
