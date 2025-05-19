@@ -210,11 +210,13 @@ async function createPost() {
         if (currentUser && data.uid === currentUser.uid) {
           const editBtn = document.createElement("button");
           const deleteBtn = document.createElement("button");
+          //수정 버튼
           editBtn.textContent = "수정";
-          deleteBtn.textContent = "삭제";
           editBtn.onclick = () => editComment(doc.id, data);
-          deleteBtn.onclick = () => deleteComment(doc.id);
           li.appendChild(editBtn);
+          //삭제 버
+          deleteBtn.textContent = "삭제";
+          deleteBtn.onclick = () => deleteComment(doc.id);
           li.appendChild(deleteBtn);
         }
         list.appendChild(li);
