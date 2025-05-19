@@ -6,3 +6,48 @@ nav a:hover { color: crimson; }
 main { padding: 20px; }
 footer { background: #111; text-align: center; padding: 15px; color: #888; }
 .story { background: #1a1a1a; margin: 10px 0; padding: 10px; border-left: 4px solid crimson; }
+.menu-toggle {
+  position: fixed;
+  top: 15px;
+  right: 20px;
+  font-size: 28px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  z-index: 1000;
+  color: white; /* 또는 검은 배경이면 white */
+}
+
+.side-menu {
+  position: fixed;
+  top: 0;
+  right: 0;
+  background-color: #111;
+  color: white;
+  width: 200px;
+  height: 100%;
+  transform: translateX(100%);
+  transition: transform 0.3s ease-in-out;
+  z-index: 999;
+  padding: 20px;
+}
+
+.side-menu.open {
+  transform: translateX(0);
+}
+
+.side-menu ul {
+  list-style: none;
+  padding: 0;
+}
+
+.side-menu li {
+  margin: 15px 0;
+  display: flex;
+  justify-content: space-between;
+}
+
+.side-menu a {
+  color: white;
+  text-decoration: none;
+}
