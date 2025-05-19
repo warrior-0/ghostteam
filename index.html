@@ -48,6 +48,42 @@
         <span style="position: absolute; top: 0; left: 0; overflow: hidden; white-space: nowrap; width: ${percent}%;">★★★★★</span>
       `;
     });
+    fetch('menu.html')
+    .then(response => response.text())
+    .then(html => {
+      document.getElementById('menuContainer').innerHTML = html;
+
+      // 메뉴 토글 버튼 동작
+      const menuToggle = document.querySelector('.menu-toggle');
+      const sideMenu = document.getElementById('sideMenu');
+
+      menuToggle.addEventListener('click', () => {
+        if (sideMenu.style.display === 'flex') {
+          sideMenu.style.display = 'none';
+        } else {
+          sideMenu.style.display = 'flex';
+        }
+      });
+
+      // 하위 메뉴 열기 버튼 동작
+      document.querySelectorAll('.toggle-btn').forEach(btn => {
+        btn.addEventListener('click', e => {
+          e.preventDefault();
+          const targetId = btn.dataset.target;
+          const submenu = document.getElementById(targetId);
+          if (submenu.style.display === 'flex') {
+            submenu.style.display = 'none';
+            btn.textContent = '+';
+          } else {
+            submenu.style.display = 'flex';
+            btn.textContent = '−';
+          }
+        });
+      });
+    })
+    .catch(err => {
+      console.error('메뉴를 불러오는 중 오류 발생:', err);
+    });
   </script>
 </body>
 </html>
