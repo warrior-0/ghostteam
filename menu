@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>괴담지옥</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: sans-serif;
+    }
+
+    /* 햄버거 버튼 */
+    .menu-toggle {
+      position: fixed;
+      top: 15px;
+      right: 20px;
+      font-size: 28px;
+      cursor: pointer;
+      z-index: 1000;
+    }
+
+    /* 메뉴 패널 */
+    .side-menu {
+      position: fixed;
+      top: 60px;
+      right: 20px;
+      background: #111;
+      color: white;
+      padding: 10px;
+      border-radius: 8px;
+      display: none;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .side-menu a {
+      color: white;
+      text-decoration: none;
+      padding: 5px 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #222;
+      border-radius: 5px;
+    }
+
+    .submenu {
+      display: none;
+      flex-direction: column;
+      margin-left: 10px;
+      gap: 5px;
+    }
+
+    .submenu a {
+      background: #333;
+      font-size: 0.9em;
+    }
+
+    .show {
+      display: flex !important;
+    }
+
+    .toggle-btn {
+      cursor: pointer;
+      font-size: 16px;
+      margin-left: 8px;
+    }
+  </style>
+</head>
+<body>
+
+<!-- 햄버거 아이콘 -->
+<div class="menu-toggle">≡</div>
+
+<!-- 사이드 메뉴 -->
+<div class="side-menu" id="sideMenu">
+  <div>
+    <a href="index.html">홈<span class="toggle-btn" data-target="sub-home">+</span></a>
+    <div class="submenu" id="sub-home">
+      <a href="index-news.html">뉴스</a>
+      <a href="index-feature.html">특집</a>
+    </div>
+  </div>
+  <div>
+    <a href="urban.html">괴담<span class="toggle-btn" data-target="sub-urban">+</span></a>
+    <div class="submenu" id="sub-urban">
+      <a href="urban-korea.html">한국 괴담</a>
+      <a href="urban-foreign.html">해외 괴담</a>
+    </div>
+  </div>
+  <div>
+    <a href="about.html">정보<span class="toggle-btn" data-target="sub-about">+</span></a>
+    <div class="submenu" id="sub-about">
+      <a href="about-history.html">역사</a>
+      <a href="about-ghosts.html">유령 종류</a>
+    </div>
+  </div>
+  <div>
+    <a href="community.html">커뮤니티<span class="toggle-btn" data-target="sub-community">+</span></a>
+    <div class="submenu" id="sub-community">
+      <a href="community-chat.html">채팅</a>
+      <a href="community-board.html">자유게시판</a>
+    </div>
+  </div>
+</div>
+
+<script>
+  const menuToggle = document.querySelector('.menu-toggle');
+  const sideMenu = document.getElementById('sideMenu');
+
+  // 햄버거 메뉴 클릭 시 메뉴 열고 닫기
+  menuToggle.addEventListener('click', () => {
+    sideMenu.classList.toggle('show');
+  });
+
+  // 각 항목의 '+' 버튼 클릭 시 하위 메뉴 열기
+  document.querySelectorAll('.toggle-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault(); // 부모 링크 방지
+      const targetId = btn.dataset.target;
+      const submenu = document.getElementById(targetId);
+      submenu.classList.toggle('show');
+      // + ↔ -
+      btn.textContent = submenu.classList.contains('show') ? '−' : '+';
+    });
+  });
+</script>
+
+</body>
+</html>
