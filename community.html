@@ -331,17 +331,47 @@ async function deleteComment(commentId) {
       document.getElementById("commentForm").addEventListener("submit", submitComment);
       document.getElementById("ratingSubmit").onclick = submitRating;
     };
+    // 메뉴 불러오기
+    fetch('menu.html')
+    .then(response => response.text())
+    .then(html => {
+      document.getElementById('menuContainer').innerHTML = html;
+
+      const menuToggle = document.querySelector('.menu-toggle');
+      const sideMenu = document.getElementById('sideMenu');
+
+      menuToggle.addEventListener('click', () => {
+        if (sideMenu.style.display === 'flex') {
+          sideMenu.style.display = 'none';
+        } else {
+          sideMenu.style.display = 'flex';
+        }
+      });
+
+      document.querySelectorAll('.toggle-btn').forEach(btn => {
+        btn.addEventListener('click', e => {
+          e.preventDefault();
+          const targetId = btn.dataset.target;
+          const submenu = document.getElementById(targetId);
+          if (submenu.style.display === 'flex') {
+            submenu.style.display = 'none';
+            btn.textContent = '+';
+          } else {
+            submenu.style.display = 'flex';
+            btn.textContent = '−';
+          }
+        });
+      });
+    })
+    .catch(err => {
+      console.error('메뉴를 불러오는 중 오류 발생:', err);
+    });
   </script>
 </head>
 <body>
+  <div id='menuContainer'></div>
   <header>
     <div class="logo">괴담지옥</div>
-    <nav>
-      <a href="index.html">홈</a>
-      <a href="urban.html">괴담</a>
-      <a href="about.html">정보</a>
-      <a href="community.html">커뮤니티</a>
-    </nav>
     <div id="userStatus">로그인 필요</div>
   </header>
 
