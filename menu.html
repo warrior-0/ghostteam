@@ -1,0 +1,37 @@
+<!-- menu.html -->
+<div>
+  <!-- 햄버거 버튼 -->
+  <div class="menu-toggle">≡</div>
+
+  <!-- 사이드 메뉴 -->
+  <nav class="side-menu" id="sideMenu" style="display:none; flex-direction: column; position: fixed; top: 60px; right: 20px; background: #111; color: white; padding: 10px; border-radius: 8px; gap: 10px; z-index: 3000;">
+    <div>
+      <a href="index.html">홈<span class="toggle-btn" data-target="sub-home">+</span></a>
+      <div class="submenu" id="sub-home" style="display:none; flex-direction: column; margin-left: 10px; gap: 5px;">
+        <a href="index.html">인기 괴담</a>
+        <a href="index.html">최신 괴담</a>
+      </div>
+    </div>
+    <div>
+      <a href="urban.html">괴담<span class="toggle-btn" data-target="sub-urban">+</span></a>
+      <div class="submenu" id="sub-urban" style="display:none; flex-direction: column; margin-left: 10px; gap: 5px;">
+        <a href="urban-korea.html">한국 괴담</a>
+        <a href="urban-foreign.html">해외 괴담</a>
+      </div>
+    </div>
+    <div>
+      <a href="about.html">정보<span class="toggle-btn" data-target="sub-about">+</span></a>
+      <div class="submenu" id="sub-about" style="display:none; flex-direction: column; margin-left: 10px; gap: 5px;">
+        <a href="about-history.html">역사</a>
+        <a href="about-ghosts.html">유령 종류</a>
+      </div>
+    </div>
+    <div>
+      <a href="community.html">커뮤니티<span class="toggle-btn" data-target="sub-community">+</span></a>
+      <div class="submenu" id="sub-community" style="display:none; flex-direction: column; margin-left: 10px; gap: 5px;">
+        <a href="community-chat.html">채팅</a>
+        <a href="community-board.html">자유게시판</a>
+      </div>
+    </div>
+  </nav>
+</div>
