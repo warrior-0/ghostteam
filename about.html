@@ -2,7 +2,46 @@
 <html lang='ko'>
 <head><meta charset='UTF-8'><title>정보 | 괴담지옥</title><link rel='stylesheet' href='style.css'></head>
 <body>
-<header><div class='logo'>괴담지옥</div><nav><a href='index.html'>홈</a><a href='urban.html'>괴담</a><a href='about.html'>정보</a><a href='community.html'>커뮤니티</a></nav></header>
+<div id='menuContainer'></div>
+<header><div class='logo'>괴담지옥</div></header>
 <main><h1>🔎 사이트 정보</h1><p>운영자 인사말 및 문의처 안내.</p></main>
 <footer>&copy; 2025 괴담지옥</footer>
-</body></html>
+<script>
+// 메뉴 불러오기
+    fetch('menu.html')
+    .then(response => response.text())
+    .then(html => {
+      document.getElementById('menuContainer').innerHTML = html;
+
+      const menuToggle = document.querySelector('.menu-toggle');
+      const sideMenu = document.getElementById('sideMenu');
+
+      menuToggle.addEventListener('click', () => {
+        if (sideMenu.style.display === 'flex') {
+          sideMenu.style.display = 'none';
+        } else {
+          sideMenu.style.display = 'flex';
+        }
+      });
+
+      document.querySelectorAll('.toggle-btn').forEach(btn => {
+        btn.addEventListener('click', e => {
+          e.preventDefault();
+          const targetId = btn.dataset.target;
+          const submenu = document.getElementById(targetId);
+          if (submenu.style.display === 'flex') {
+            submenu.style.display = 'none';
+            btn.textContent = '+';
+          } else {
+            submenu.style.display = 'flex';
+            btn.textContent = '−';
+          }
+        });
+      });
+    })
+    .catch(err => {
+      console.error('메뉴를 불러오는 중 오류 발생:', err);
+    });
+</script>
+</body>
+</html>
