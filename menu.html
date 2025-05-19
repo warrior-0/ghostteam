@@ -1,3 +1,4 @@
+<!-- menu.html -->
 <style>
   .menu-toggle {
     position: fixed;
@@ -70,21 +71,20 @@
 <button class="menu-toggle">≡</button>
 
 <div id="sideMenu">
-  <!-- 홈 메뉴 (토글 버튼 없음) -->
   <div class="menu-item">
     <a href="index.html">홈</a>
   </div>
 
-  <!-- 나머지 메뉴는 토글 버튼 포함 -->
   <div class="menu-item">
     <a href="urban.html">괴담</a>
     <button class="toggle-btn" data-target="urbanSub">+</button>
   </div>
   <div class="submenu" id="urbanSub">
+    <a href="#" class="filter-link" data-filter="all">전체 괴담 모음</a>
+    <a href="#" class="filter-link" data-filter="true">실화 이야기</a>
     <a href="#" class="filter-link" data-filter="korea">한국 괴담</a>
     <a href="#" class="filter-link" data-filter="foreign">해외 괴담</a>
-    <a href="#" class="filter-link" data-filter="true">실화 기반</a>
-    <a href="#" class="filter-link" data-filter="user">사용자 제보</a>
+    <a href="#" class="filter-link" data-filter="user">사용자 제보 괴담</a>
   </div>
 
   <div class="menu-item">
@@ -92,8 +92,9 @@
     <button class="toggle-btn" data-target="infoSub">+</button>
   </div>
   <div class="submenu" id="infoSub">
-    <a href="about.html#terms">이용약관</a>
-    <a href="about.html#faq">FAQ</a>
+    <a href="about.html#intro">사이트 소개</a>
+    <a href="about.html#greet">운영자 인사말</a>
+    <a href="about.html#contact">문의하기</a>
   </div>
 
   <div class="menu-item">
@@ -101,7 +102,7 @@
     <button class="toggle-btn" data-target="commSub">+</button>
   </div>
   <div class="submenu" id="commSub">
-    <a href="community.html#talk">자유게시판</a>
-    <a href="community.html#rate">공포 평점</a>
+    <a href="community.html#board">게시판</a>
+    <a href="community.html#popular">인기 글 모음</a>
   </div>
 </div>
