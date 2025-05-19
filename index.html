@@ -33,56 +33,6 @@
     </section>
   </main>
   <footer>&copy; 2025 괴담지옥</footer>
-  <!-- 햄버거 버튼 -->
-<div class="menu-toggle">≡</div>
-
-<!-- 사이드 메뉴 -->
-<div class="side-menu" id="sideMenu">
-  <div>
-    <a href="index.html">홈<span class="toggle-btn" data-target="sub-home">+</span></a>
-    <div class="submenu" id="sub-home">
-      <a href="index.html">인기 괴담</a>
-      <a href="index.html">최신 괴담</a>
-    </div>
-  </div>
-  <div>
-    <a href="urban.html">괴담<span class="toggle-btn" data-target="sub-urban">+</span></a>
-    <div class="submenu" id="sub-urban">
-      <a href="urban-korea.html">한국 괴담</a>
-      <a href="urban-foreign.html">해외 괴담</a>
-    </div>
-  </div>
-  <div>
-    <a href="about.html">정보<span class="toggle-btn" data-target="sub-about">+</span></a>
-    <div class="submenu" id="sub-about">
-      <a href="about-history.html">역사</a>
-      <a href="about-ghosts.html">유령 종류</a>
-    </div>
-  </div>
-  <div>
-    <a href="community.html">커뮤니티<span class="toggle-btn" data-target="sub-community">+</span></a>
-  </div>
-</div>
-
-<script>
-  const menuToggle = document.querySelector('.menu-toggle');
-  const sideMenu = document.getElementById('sideMenu');
-
-  menuToggle.addEventListener('click', () => {
-    sideMenu.classList.toggle('show');
-  });
-
-  document.querySelectorAll('.toggle-btn').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      e.preventDefault();
-      const targetId = btn.dataset.target;
-      const submenu = document.getElementById(targetId);
-      submenu.classList.toggle('show');
-      btn.textContent = submenu.classList.contains('show') ? '−' : '+';
-    });
-  });
-</script>
-
    <script>
     document.querySelectorAll('.story').forEach(el => {
       const score = parseFloat(el.getAttribute('data-score'));
