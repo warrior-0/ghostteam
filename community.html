@@ -48,7 +48,7 @@
       
       currentUser = user;
       if (user) {
-        document.getElementById("userStatus").innerText = `로그인: ${user.email}`;
+        document.getElementById("userStatus").innerText = `로그인: ${user.email} 닉네임: ${user.authorname}`;
         document.getElementById("authSection").style.display = "none";
         document.getElementById("postSection").style.display = "block";
         loadPosts();
