@@ -1,37 +1,79 @@
 <!-- menu.html -->
-<div>
-<!-- 햄버거 버튼 -->
-<div class="menu-toggle">≡</div>
+<style>
+  .menu-toggle {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    z-index: 1000;
+    background: black;
+    color: white;
+    padding: 0.5rem 1rem;
+    font-size: 1.5rem;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+  }
 
-  <!-- 사이드 메뉴 -->
-  <nav class="side-menu" id="sideMenu" style="display:none; flex-direction: column; position: fixed; top: 60px; right: 20px; background: #111; color: white; padding: 10px; border-radius: 8px; gap: 10px; z-index: 3000;">
-    <div>
-      <a href="index.html">홈<span class="toggle-btn" data-target="sub-home">+</span></a>
-      <div class="submenu" id="sub-home" style="display:none; flex-direction: column; margin-left: 10px; gap: 5px;">
-        <a href="index.html">인기 괴담</a>
-        <a href="index.html">최신 괴담</a>
-      </div>
-    </div>
-    <div>
-      <a href="urban.html">괴담<span class="toggle-btn" data-target="sub-urban">+</span></a>
-      <div class="submenu" id="sub-urban" style="display:none; flex-direction: column; margin-left: 10px; gap: 5px;">
-        <a href="urban-korea.html">한국 괴담</a>
-        <a href="urban-foreign.html">해외 괴담</a>
-      </div>
-    </div>
-    <div>
-      <a href="about.html">정보<span class="toggle-btn" data-target="sub-about">+</span></a>
-      <div class="submenu" id="sub-about" style="display:none; flex-direction: column; margin-left: 10px; gap: 5px;">
-        <a href="about-history.html">역사</a>
-        <a href="about-ghosts.html">유령 종류</a>
-      </div>
-    </div>
-    <div>
-      <a href="community.html">커뮤니티<span class="toggle-btn" data-target="sub-community">+</span></a>
-      <div class="submenu" id="sub-community" style="display:none; flex-direction: column; margin-left: 10px; gap: 5px;">
-        <a href="community-chat.html">채팅</a>
-        <a href="community-board.html">자유게시판</a>
-      </div>
-    </div>
-  </nav>
+  #sideMenu {
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 100%;
+    width: 200px;
+    background: #111;
+    color: white;
+    padding-top: 60px;
+    display: none;
+    flex-direction: column;
+    gap: 1rem;
+    z-index: 999;
+  }
+
+  #sideMenu a {
+    color: white;
+    text-decoration: none;
+    padding: 1rem;
+    border-bottom: 1px solid #333;
+  }
+
+  #sideMenu a:hover {
+    background: #222;
+  }
+
+  .toggle-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1rem;
+    cursor: pointer;
+    margin-left: 0.5rem;
+  }
+
+  .submenu {
+    display: none;
+    flex-direction: column;
+    padding-left: 1.5rem;
+    background-color: #1a1a1a;
+  }
+
+  .submenu a {
+    font-size: 0.9rem;
+    border: none;
+  }
+</style>
+
+<button class="menu-toggle">≡</button>
+
+<div id="sideMenu">
+  <a href="index.html">홈</a>
+  <a href="urban.html">괴담</a>
+  <a href="about.html">정보</a>
+  <a href="community.html">커뮤니티</a>
+  <a href="#">기타
+    <button class="toggle-btn" data-target="extraMenu">+</button>
+  </a>
+  <div class="submenu" id="extraMenu">
+    <a href="notice.html">공지사항</a>
+    <a href="faq.html">FAQ</a>
+  </div>
 </div>
