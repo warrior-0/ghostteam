@@ -84,6 +84,17 @@ fetch('menu.html')
         btn.textContent = isOpen ? '+' : '−';
       });
     });
+    // 메뉴 필터 버튼 연결
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const selected = btn.dataset.filter;
+    filter.value = selected;
+    filter.dispatchEvent(new Event('change'));
+
+    // 메뉴 닫기 (선택사항)
+    if (sideMenu) sideMenu.style.display = 'none';
+      });
+    });
   });
 </script>
 </body>
