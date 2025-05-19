@@ -6,37 +6,3 @@ nav a:hover { color: crimson; }
 main { padding: 20px; }
 footer { background: #111; text-align: center; padding: 15px; color: #888; }
 .story { background: #1a1a1a; margin: 10px 0; padding: 10px; border-left: 4px solid crimson; }
-.menu-toggle {
-  position: fixed;
-  top: 15px;
-  right: 20px;
-  font-size: 28px;
-  cursor: pointer;
-  color: white;
-  z-index: 4000;
-  user-select: none;
-}
-
-.side-menu a {
-  color: white;
-  text-decoration: none;
-  padding: 5px 10px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: #222;
-  border-radius: 5px;
-}
-
-.toggle-btn {
-  cursor: pointer;
-  font-size: 16px;
-  margin-left: 8px;
-}
-
-.submenu a {
-  background: #333;
-  font-size: 0.9em;
-  padding-left: 10px;
-  border-radius: 3px;
-}
