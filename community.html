@@ -91,15 +91,6 @@
 
     // 로그인
     async function signIn() {
-      //글 꾸미기
-      item.innerHTML = `
-  <div class="post-card">
-    <h3>${data.title}</h3>
-    <p class="meta">작성자: ${data.authorname || "익명"}</p>
-    <p class="content">${data.content}</p>
-  </div>
-`;
-
       const email = document.getElementById("email").value.trim();
       const password = document.getElementById("password").value;
       try {
@@ -207,14 +198,6 @@ async function createPost() {
     
     // 댓글 불러오기
     async function loadComments() {
-      //댓글 꾸미기
-      li.innerHTML = `
-  <div class="comment-card">
-    <p><strong>${data.authorname || "익명"}</strong></p>
-    <p>${data.comment}</p>
-  </div>
-`;
-
       const commentsRef = collection(db, "comments");
       const q = query(commentsRef, orderBy("timestamp", "desc"));
       const snapshot = await getDocs(q);
