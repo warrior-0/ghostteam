@@ -107,35 +107,49 @@
       alert("로그아웃 되었습니다.");
     }
 
-    // 게시글 불러오기
-    function loadPosts() {
-      db.collection("horror-community")
-      .orderBy("timestamp", "desc")
-      .get()
-      .then(snapshot => {
-        const postList = document.getElementById("postList");
-        postList.innerHTML = ""; // 이전 글들 초기화
+// 게시글 불러오기
+function loadPosts() {
+  db.collection("horror-community")
+    .orderBy("timestamp", "desc")
+    .get()
+    .then(snapshot => {
+      const postList = document.getElementById("postList");
+      postList.innerHTML = ""; // 초기화
+
       snapshot.forEach(doc => {
         const data = doc.data();
-        const item = document.createElement("li");
-        item.innerHTML = `
-          <div class="post-title">${data.title} - 작성자: ${data.authorname || "익명"}</div>
-          <div class="post-content" style="display: none;">${data.content}</div>
-        `;
-      // 토글 기능 추가
-      const titleEl = item.querySelector(".post-title");
-      const contentEl = item.querySelector(".post-content");
 
-      titleEl.onclick = () => {
-          const isVisible = contentEl.style.display === "block";
-          contentEl.style.display = isVisible ? "none" : "block";
-        };
+        // li 생성
+        const item = document.createElement("li");
+
+        // HTML 삽입
+        item.innerHTML = `
+          <div class="post-title" style="cursor:pointer; font-weight: bold;">
+            ${data.title} - 작성자: ${data.authorname || "익명"}
+          </div>
+          <div class="post-content" style="display: none; padding: 5px 10px;">
+            ${data.content}
+          </div>
+        `;
+
+        // 토글 기능 추가
+        const titleDiv = item.querySelector(".post-title");
+        const contentDiv = item.querySelector(".post-content");
+
+        titleDiv.addEventListener("click", () => {
+          const isVisible = contentDiv.style.display === "block";
+          contentDiv.style.display = isVisible ? "none" : "block";
+        });
 
         postList.appendChild(item);
       });
+    })
+    .catch(error => {
+      console.error("게시글 불러오기 실패:", error);
     });
 }
 
+    
     // 게시글 수정
     function editPost(postId, data) {
       const newTitle = prompt("새 제목을 입력하세요", data.title);
