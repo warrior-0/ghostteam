@@ -91,6 +91,15 @@
 
     // 로그인
     async function signIn() {
+      //글 꾸미기
+      item.innerHTML = `
+  <div class="post-card">
+    <h3>${data.title}</h3>
+    <p class="meta">작성자: ${data.authorname || "익명"}</p>
+    <p class="content">${data.content}</p>
+  </div>
+`;
+
       const email = document.getElementById("email").value.trim();
       const password = document.getElementById("password").value;
       try {
