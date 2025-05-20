@@ -96,6 +96,19 @@ document.querySelectorAll('.filter-btn').forEach(btn => {
       });
     });
   });
+// 괴담 메뉴에서 펼쳤을때 filter자동적용으로 페이지 교체 없이 적용
+document.addEventListener('click', function (e) {
+  if (e.target.matches('.submenu a[data-filter]')) {
+    e.preventDefault();
+    const filterValue = e.target.dataset.filter;
+    const filterSelect = document.getElementById('filter');
+    if (filterSelect) {
+      filterSelect.value = filterValue;
+      filterSelect.dispatchEvent(new Event('change'));
+    }
+  }
+});
+
 </script>
 </body>
 </html>
