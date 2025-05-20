@@ -207,6 +207,14 @@ async function createPost() {
     
     // 댓글 불러오기
     async function loadComments() {
+      //댓글 꾸미기
+      li.innerHTML = `
+  <div class="comment-card">
+    <p><strong>${data.authorname || "익명"}</strong></p>
+    <p>${data.comment}</p>
+  </div>
+`;
+
       const commentsRef = collection(db, "comments");
       const q = query(commentsRef, orderBy("timestamp", "desc"));
       const snapshot = await getDocs(q);
