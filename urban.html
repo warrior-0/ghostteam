@@ -1,45 +1,51 @@
 <!DOCTYPE html>
-<html lang='ko'>
+<html lang="ko">
 <head>
-  <meta charset='UTF-8'>
+  <meta charset="UTF-8">
   <title>괴담 | 괴담지옥</title>
-  <link rel='stylesheet' href='style.css'>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div id='menuContainer'></div>
-<header>
-  <div class='logo'>괴담지옥</div>
-</header>
-<main>
-  <h1>🕯️ 괴담 모음</h1>
-  <label for="filter">분류:</label>
-  <select id="filter">
-    <option value="all">전체</option>
-    <option value="true">실화 이야기</option>
-    <option value="korea">한국 괴담</option>
-    <option value="foreign">해외 괴담</option>
-    <option value="user">사용자 제보 괴담</option>
-  </select>
-  <section>
-  <div class='story-list'>
-    <div class='story' data-type='korea' data-score='4.1'>🇰🇷 폐가의 정체불명 인형
-    <div class='stars'></div>
-    </div>
-    <div class='story' data-type='foreign' data-score='4.3'>🇺🇸 텍사스 외딴집의 괴소문
-    <div class='stars'></div>
-    </div>
-    <div class='story' data-type='true' data-score='4.3'>📖 공장 야간 근무 중 실제 경험담
-    <div class='stars'></div>
-    </div>
-    <div class='story' data-type='user' data-score='4.3'>👤 내가 겪은 새벽의 발소리
-    <div class='stars'></div>
-    </div>
-  </div>
-  </section>
-</main>
-<footer>&copy; 2025 괴담지옥</footer>
+  <div id="menuContainer"></div>
+
+  <header>
+    <div class="logo">괴담지옥</div>
+  </header>
+
+  <main>
+    <h1>🕯️ 괴담 모음</h1>
+    <label for="filter">분류:</label>
+    <select id="filter">
+      <option value="all">전체</option>
+      <option value="true">실화 기반</option>
+      <option value="korea">한국 괴담</option>
+      <option value="foreign">해외 괴담</option>
+      <option value="user">사용자 제보</option>
+    </select>
+
+    <section>
+      <div class="story-list">
+        <div class="story" data-type="korea" data-score="4.1">🇰🇷 폐가의 정체불명 인형
+          <div class="stars"></div>
+        </div>
+        <div class="story" data-type="foreign" data-score="4.3">🇺🇸 텍사스 외딴집의 괴소문
+          <div class="stars"></div>
+        </div>
+        <div class="story" data-type="true" data-score="4.3">📖 공장 야간 근무 중 실제 경험담
+          <div class="stars"></div>
+        </div>
+        <div class="story" data-type="user" data-score="4.3">👤 내가 겪은 새벽의 발소리
+          <div class="stars"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>&copy; 2025 괴담지옥</footer>
+
   <script>
-  document.querySelectorAll('.story').forEach(el => {
+    // 별점 표시
+    document.querySelectorAll('.story').forEach(el => {
       const score = parseFloat(el.getAttribute('data-score'));
       const percent = (score / 5) * 100;
       const starsEl = el.querySelector('.stars');
@@ -51,64 +57,49 @@
         <span style="position: absolute; top: 0; left: 0; overflow: hidden; white-space: nowrap; width: ${percent}%;">★★★★★</span>
       `;
     });
-  const filter = document.getElementById('filter');
-  const stories = document.querySelectorAll('.story-list .story');
-  filter.addEventListener('change', () => {
-    const type = filter.value;
-    stories.forEach(story => {
-      story.style.display = (type === 'all' || story.dataset.type === type) ? 'block' : 'none';
-    });
-  });
-// 메뉴 불러오기
-fetch('menu.html')
-  .then(response => response.text())
-  .then(html => {
-    document.getElementById('menuContainer').innerHTML = html;
 
-    // 햄버거 메뉴 토글
-    const menuToggle = document.querySelector('.menu-toggle');
-    const sideMenu = document.getElementById('sideMenu');
+    // 필터 기능
+    const filter = document.getElementById('filter');
+    const stories = document.querySelectorAll('.story');
 
-    menuToggle.addEventListener('click', () => {
-      sideMenu.style.display = sideMenu.style.display === 'flex' ? 'none' : 'flex';
-    });
-
-    // 하위 메뉴 토글
-    document.querySelectorAll('.toggle-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const targetId = btn.dataset.target;
-        const submenu = document.getElementById(targetId);
-        const isOpen = submenu.style.display === 'flex';
-
-        submenu.style.display = isOpen ? 'none' : 'flex';
-        btn.textContent = isOpen ? '+' : '−';
+    function applyFilter(type) {
+      filter.value = type;
+      stories.forEach(story => {
+        story.style.display = (type === 'all' || story.dataset.type === type) ? 'block' : 'none';
       });
-    });
-    // 메뉴 필터 버튼 연결
-document.querySelectorAll('.filter-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    const selected = btn.dataset.filter;
-    filter.value = selected;
-    filter.dispatchEvent(new Event('change'));
-
-    // 메뉴 닫기 (선택사항)
-    if (sideMenu) sideMenu.style.display = 'none';
-      });
-    });
-  });
-// 괴담 메뉴에서 펼쳤을때 filter자동적용으로 페이지 교체 없이 적용
-document.addEventListener('click', function (e) {
-  if (e.target.matches('.submenu a[data-filter]')) {
-    e.preventDefault();
-    const filterValue = e.target.dataset.filter;
-    const filterSelect = document.getElementById('filter');
-    if (filterSelect) {
-      filterSelect.value = filterValue;
-      filterSelect.dispatchEvent(new Event('change'));
     }
-  }
-});
 
-</script>
+    const params = new URLSearchParams(window.location.search);
+    const typeParam = params.get('filter');
+    if (typeParam) applyFilter(typeParam);
+
+    filter.addEventListener('change', () => {
+      applyFilter(filter.value);
+    });
+
+    // 메뉴 로딩
+    fetch('menu.html')
+      .then(res => res.text())
+      .then(html => {
+        document.getElementById('menuContainer').innerHTML = html;
+
+        // 메뉴 토글
+        const menuToggle = document.querySelector('.menu-toggle');
+        const sideMenu = document.getElementById('sideMenu');
+        menuToggle.addEventListener('click', () => {
+          sideMenu.style.display = sideMenu.style.display === 'flex' ? 'none' : 'flex';
+        });
+
+        // 서브 메뉴 토글
+        document.querySelectorAll('.toggle-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const target = document.getElementById(btn.dataset.target);
+            const isOpen = target.style.display === 'flex';
+            target.style.display = isOpen ? 'none' : 'flex';
+            btn.textContent = isOpen ? '+' : '−';
+          });
+        });
+      });
+  </script>
 </body>
 </html>
