@@ -276,36 +276,38 @@ async function deleteComment(commentId) {
 }
 
     // 평점 제출 (한 계정당 1회 제한)
-    async function submitRating() {
-      if (!currentUser) {
-        alert("로그인 후 평점 제출 가능합니다.");
-        return;
-      }
-      if (selectedRating < 1 || selectedRating > 5) {
-        alert("1~5점 중에서 별점을 선택해주세요.");
-        return;
-      }
+async function submitRating() {
+  if (!currentUser) {
+    alert("로그인 후 평점 제출 가능합니다.");
+    return;
+  }
 
-      // 유저가 이미 평점 등록했는지 체크
-      const ratingsRef = collection(db, "ratings");
-      const q = query(ratingsRef, where("uid", "==", currentUser.uid));
-      const snapshot = await getDocs(q);
+  if (selectedRating < 1 || selectedRating > 5) {
+    alert("1~5점 중에서 별점을 선택해주세요.");
+    return;
+  }
 
-      if (!snapshot.empty) {
-        alert("이미 평점을 등록하셨습니다.");
-        return;
-      }
+  const ratingsRef = collection(db, "ratings");
+  const q = query(ratingsRef, where("uid", "==", currentUser.uid));
+  const snapshot = await getDocs(q);
 
-      await addDoc(ratingsRef, {
-        rating: ratingValue,
-        uid: currentUser.uid,
-        timestamp: new Date(),
-      });
+  if (!snapshot.empty) {
+    alert("이미 평점을 등록하셨습니다. 평점 변경은 아직 지원하지 않습니다.");
+    return;
+  }
 
-      alert("평점이 저장되었습니다!");
-      document.getElementById("rating").value = "";
-      calculateAverageRating();
-    }
+  await addDoc(ratingsRef, {
+    rating: selectedRating,
+    uid: currentUser.uid,
+    timestamp: new Date(),
+  });
+
+  alert("평점이 저장되었습니다!");
+  selectedRating = 0;
+  updateStarDisplay(0);
+  calculateAverageRating();
+}
+
 
     // 평균 평점 계산
     async function calculateAverageRating() {
