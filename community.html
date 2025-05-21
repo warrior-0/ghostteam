@@ -322,7 +322,7 @@ async function submitRating() {
       const avg = count === 0 ? 0 : (sum / count).toFixed(1);
       document.getElementById("avgRating").innerText = `현재 평균 평점: ${avg}점`;
     }
-    let selectedRating = 0;
+  let selectedRating = 0;
     window.onload = () => {
       let selectedRating = 0;
       const stars = document.querySelectorAll('#starRating span');
