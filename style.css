@@ -23,22 +23,19 @@ textarea {
 }
 
 /*닉네임 입력 버튼 꾸미기*/
-input[type="text"]:focus,
-textarea:focus {
+input[type="text"]:focus {
   outline: none;
   box-shadow: 0 0 12px rgba(255, 50, 50, 0.7);
 }
 
 /*비밀번호 입력 버튼 꾸미기*/
-input[type="password"]:focus,
-textarea:focus {
+input[type="password"]:focus {
   outline: none;
   box-shadow: 0 0 12px rgba(255, 50, 50, 0.7);
 }
 
 /*이메일 입력 버튼 꾸미기*/
-input[type="email"]:focus,
-textarea:focus {
+input[type="email"]:focus {
   outline: none;
   box-shadow: 0 0 12px rgba(255, 50, 50, 0.7);
 }
