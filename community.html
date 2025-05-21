@@ -417,15 +417,16 @@ let selectedRating = 0;
       <ul id="commentList"></ul>
 
       <h2>평점 남기기</h2>
-      <input
-        type="number"
-        id="rating"
-        placeholder="1.0 ~ 5.0"
-        step="0.1"
-        min="1"
-        max="5"
-      />
-      <button id="ratingSubmit">평점 제출</button>
+      <div id="starRating">
+        <span data-value="1" class="star">&#9733;</span>
+        <span data-value="2" class="star">&#9733;</span>
+        <span data-value="3" class="star">&#9733;</span>
+        <span data-value="4" class="star">&#9733;</span>
+        <span data-value="5" class="star">&#9733;</span>
+        <button id="ratingSubmit">평점 제출</button>
+      </div>
+<p id="avgRating">현재 평균 평점: 0점</p>
+
       <p id="avgRating">현재 평균 평점: 0점</p>
 
 
