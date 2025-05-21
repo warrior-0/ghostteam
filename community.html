@@ -274,15 +274,16 @@ async function deleteComment(commentId) {
     loadComments();
   }
 }
-
-    // 평점 제출 (한 계정당 1회 제한)
-    async function submitRating() {
+    // 평점 제출
+async function submitRating() {
   if (!currentUser) {
     alert("로그인 후 평점 제출 가능합니다.");
     return;
   }
-  if (selectedRating < 1 || selectedRating > 5) {
-    alert("별점을 선택해주세요.");
+
+  const ratingValue = parseFloat(document.getElementById("rating").value);
+  if (isNaN(ratingValue) || ratingValue < 1 || ratingValue > 5) {
+    alert("1.0 이상 5.0 이하의 평점을 입력해주세요.");
     return;
   }
 
@@ -291,21 +292,26 @@ async function deleteComment(commentId) {
   const snapshot = await getDocs(q);
 
   if (!snapshot.empty) {
-    alert("이미 평점을 등록하셨습니다.");
-    return;
+    // 이미 등록한 평점이 있을 경우 → 수정
+    const ratingDoc = snapshot.docs[0];
+    const ratingRef = doc(db, "ratings", ratingDoc.id);
+    await setDoc(ratingRef, {
+      ...ratingDoc.data(),
+      rating: ratingValue,
+      timestamp: new Date(),
+    });
+    alert("평점이 수정되었습니다!");
+  } else {
+    // 처음 평점 등록
+    await addDoc(ratingsRef, {
+      rating: ratingValue,
+      uid: currentUser.uid,
+      timestamp: new Date(),
+    });
+    alert("평점이 저장되었습니다!");
   }
 
-  await addDoc(ratingsRef, {
-    rating: selectedRating,
-    uid: currentUser.uid,
-    timestamp: new Date(),
-  });
-
-  alert("평점이 저장되었습니다!");
-  selectedRating = 0;
-  document.querySelectorAll("#starRating .star").forEach(star => {
-    star.classList.remove("selected");
-  });
+  document.getElementById("rating").value = "";
   calculateAverageRating();
 }
 
