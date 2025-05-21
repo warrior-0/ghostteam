@@ -281,9 +281,9 @@ async function submitRating() {
     return;
   }
 
-  const ratingValue = parseFloat(document.getElementById("rating").value);
+  const ratingValue = selectedRating;
   if (isNaN(ratingValue) || ratingValue < 1 || ratingValue > 5) {
-    alert("1.0 이상 5.0 이하의 평점을 입력해주세요.");
+    alert("1 이상 5 이하의 평점을 입력해주세요.");
     return;
   }
 
