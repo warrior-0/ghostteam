@@ -6,10 +6,10 @@ nav a:hover { color: crimson; }
 main { padding: 20px; }
 footer { background: #111; text-align: center; padding: 15px; color: #888; }
 .story { background: #1a1a1a; margin: 10px 0; padding: 10px; border-left: 4px solid crimson; }
-input[type="text"],
+input[type="text", type="email", type="password"],
 textarea {
   width: 100%;
-  max-width: 600px;
+  max-width: 200px;
   padding: 12px;
   margin: 8px 0;
   border: none;
