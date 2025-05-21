@@ -42,10 +42,11 @@
     const db = getFirestore(app);
 
     let currentUser = null;
+    let selectedRating = 0;
+    let stars;
 
     // 로그인 상태 감지 및 UI 업데이트
     onAuthStateChanged(auth, (user) => {
-      
       currentUser = user;
       if (user) {
         document.getElementById("userStatus").innerText = `로그인: ${user.email}`;
@@ -58,36 +59,53 @@
         document.getElementById("userStatus").innerText = "로그인 필요";
         document.getElementById("authSection").style.display = "block";
         document.getElementById("postSection").style.display = "none";
+        document.getElementById("avgRating").innerText = `현재 평균 평점: 0점`;
       }
     });
 
-    // 회원가입
-    async function signUp() {
-  const email = document.getElementById("email").value.trim();
-  const password = document.getElementById("password").value;
-  const nickname = document.getElementById("nickname").value.trim();
-
-  if (!nickname) {
-    alert("닉네임을 입력해주세요.");
-    return;
-  }
-
-  try {
-    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-    const user = userCredential.user;
-
-    // Firestore에 닉네임 저장
-    await setDoc(doc(db, "users", user.uid), {
-      email: user.email,
-      nickname: nickname,
+    // 별점 UI 세팅
+    window.addEventListener("DOMContentLoaded", () => {
+      stars = document.querySelectorAll("#starRating span");
+      stars.forEach(star => {
+        star.addEventListener("click", () => {
+          selectedRating = parseInt(star.dataset.value);
+          updateStarDisplay(selectedRating);
+        });
+      });
     });
 
-    alert("회원가입 완료! 로그인되었습니다.");
-  } catch (error) {
-    alert("회원가입 오류: " + error.message);
-  }
-}
+    function updateStarDisplay(rating) {
+      stars.forEach((star) => {
+        star.textContent = parseInt(star.dataset.value) <= rating ? '★' : '☆';
+      });
+    }
 
+    // 회원가입
+    async function signUp() {
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value;
+      const nickname = document.getElementById("nickname").value.trim();
+
+      if (!nickname) {
+        alert("닉네임을 입력해주세요.");
+        return;
+      }
+
+      try {
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+
+        // Firestore에 닉네임 저장
+        await setDoc(doc(db, "users", user.uid), {
+          email: user.email,
+          nickname: nickname,
+        });
+
+        alert("회원가입 완료! 로그인되었습니다.");
+      } catch (error) {
+        alert("회원가입 오류: " + error.message);
+      }
+    }
 
     // 로그인
     async function signIn() {
@@ -105,6 +123,8 @@
     async function signOutUser() {
       await signOut(auth);
       alert("로그아웃 되었습니다.");
+      selectedRating = 0;
+      updateStarDisplay(0);
     }
 
     // 게시글 불러오기
@@ -133,6 +153,7 @@
         list.appendChild(item);
       });
     }
+    
     // 게시글 수정
     function editPost(postId, data) {
       const newTitle = prompt("새 제목을 입력하세요", data.title);
@@ -149,53 +170,49 @@
         });
       }
     }
-    
+
     // 게시글 삭제
     async function deletePost(postId) {
-  if (confirm("정말로 이 게시글을 삭제하시겠습니까?")) {
-    await deleteDoc(doc(db, "posts", postId));
-    alert("게시글이 삭제되었습니다.");
-    loadPosts();
-  }
-}
+      if (confirm("정말로 이 게시글을 삭제하시겠습니까?")) {
+        await deleteDoc(doc(db, "posts", postId));
+        alert("게시글이 삭제되었습니다.");
+        loadPosts();
+      }
+    }
 
     // 게시글 작성
-async function createPost() {
-  if (!currentUser) {
-    alert("로그인 후 작성 가능합니다.");
-    return;
-  }
+    async function createPost() {
+      if (!currentUser) {
+        alert("로그인 후 작성 가능합니다.");
+        return;
+      }
 
-  const title = document.getElementById("title").value.trim();
-  const content = document.getElementById("content").value.trim();
-  if (!title || !content) {
-    alert("제목과 내용을 입력해주세요.");
-    return;
-  }
+      const title = document.getElementById("title").value.trim();
+      const content = document.getElementById("content").value.trim();
+      if (!title || !content) {
+        alert("제목과 내용을 입력해주세요.");
+        return;
+      }
 
-  // 유저 정보 불러오기 (닉네임)
-  const userDoc = await getDoc(doc(db, "users", currentUser.uid));
-  const nickname = userDoc.exists() ? userDoc.data().nickname : "익명";
+      // 유저 정보 불러오기 (닉네임)
+      const userDoc = await getDoc(doc(db, "users", currentUser.uid));
+      const nickname = userDoc.exists() ? userDoc.data().nickname : "익명";
 
-  await addDoc(collection(db, "posts"), {
-    title,
-    content,
-    authorUid: currentUser.uid,
-    authorEmail: currentUser.email,
-    authorname: nickname, // 여기 이름을 일관성 있게 사용
-    created: new Date(),
-  });
+      await addDoc(collection(db, "posts"), {
+        title,
+        content,
+        authorUid: currentUser.uid,
+        authorEmail: currentUser.email,
+        authorname: nickname,
+        created: new Date(),
+      });
 
-  alert("작성 완료!");
-  document.getElementById("title").value = "";
-  document.getElementById("content").value = "";
-  loadPosts();
-}
+      alert("작성 완료!");
+      document.getElementById("title").value = "";
+      document.getElementById("content").value = "";
+      loadPosts();
+    }
 
-
-
-
-    
     // 댓글 불러오기
     async function loadComments() {
       const commentsRef = collection(db, "comments");
@@ -206,17 +223,15 @@ async function createPost() {
       snapshot.forEach((doc) => {
         const data = doc.data();
         const li = document.createElement("li");
-        li.innerHTML = `<strong>${data.authorname||"익명"}</strong>: ${data.comment}`;
+        li.innerHTML = `<strong>${data.authorname || "익명"}</strong>: ${data.comment}`;
         if (currentUser && data.uid === currentUser.uid) {
           const editBtn = document.createElement("button");
           const deleteBtn = document.createElement("button");
-          //수정 버튼
           editBtn.textContent = "수정";
           editBtn.onclick = () => editComment(doc.id, data);
-          li.appendChild(editBtn);
-          //삭제 버
           deleteBtn.textContent = "삭제";
           deleteBtn.onclick = () => deleteComment(doc.id);
+          li.appendChild(editBtn);
           li.appendChild(deleteBtn);
         }
         list.appendChild(li);
@@ -225,32 +240,32 @@ async function createPost() {
 
     // 댓글 작성
     async function submitComment(event) {
-  event.preventDefault();
-  if (!currentUser) {
-    alert("로그인 후 댓글 작성 가능합니다.");
-    return;
-  }
+      event.preventDefault();
+      if (!currentUser) {
+        alert("로그인 후 댓글 작성 가능합니다.");
+        return;
+      }
 
-  const comment = document.getElementById("comment").value.trim();
-  if (!comment) {
-    alert("댓글을 입력해주세요.");
-    return;
-  }
+      const comment = document.getElementById("comment").value.trim();
+      if (!comment) {
+        alert("댓글을 입력해주세요.");
+        return;
+      }
 
-  const userDoc = await getDoc(doc(db, "users", currentUser.uid));
-  const nickname = userDoc.exists() ? userDoc.data().nickname : "익명";
+      const userDoc = await getDoc(doc(db, "users", currentUser.uid));
+      const nickname = userDoc.exists() ? userDoc.data().nickname : "익명";
 
-  await addDoc(collection(db, "comments"), {
-    comment,
-    authorname: nickname,
-    uid: currentUser.uid,
-    timestamp: new Date(),
-  });
+      await addDoc(collection(db, "comments"), {
+        comment,
+        authorname: nickname,
+        uid: currentUser.uid,
+        timestamp: new Date(),
+      });
 
-  alert("댓글 등록 완료!");
-  document.getElementById("commentForm").reset();
-  loadComments();
-}
+      alert("댓글 등록 완료!");
+      document.getElementById("commentForm").reset();
+      loadComments();
+    }
 
     // 댓글 수정
     function editComment(commentId, data) {
@@ -266,179 +281,115 @@ async function createPost() {
         });
       }
     }
-// 댓글 삭제
-async function deleteComment(commentId) {
-  if (confirm("정말로 이 댓글을 삭제하시겠습니까?")) {
-    await deleteDoc(doc(db, "comments", commentId));
-    alert("댓글이 삭제되었습니다.");
-    loadComments();
-  }
-}
 
-// 평점 제출 (한 계정당 1회 제한)
-async function submitRating() {
-  if (!currentUser) {
-    alert("로그인 후 평점 제출 가능합니다.");
-    return;
-  }
+    // 댓글 삭제
+    async function deleteComment(commentId) {
+      if (confirm("댓글을 삭제하시겠습니까?")) {
+        await deleteDoc(doc(db, "comments", commentId));
+        alert("댓글이 삭제되었습니다.");
+        loadComments();
+      }
+    }
 
-  if (selectedRating < 1 || selectedRating > 5) {
-    alert("1~5점 중에서 별점을 선택해주세요.");
-    return;
-  }
+    // 평점 제출
+    async function submitRating() {
+      if (!currentUser) {
+        alert("로그인 후 평점 제출 가능합니다.");
+        return;
+      }
+      if (selectedRating < 1 || selectedRating > 5) {
+        alert("1~5점 중에서 별점을 선택해주세요.");
+        return;
+      }
 
-  const ratingsRef = collection(db, "ratings");
-  const q = query(ratingsRef, where("uid", "==", currentUser.uid));
-  const snapshot = await getDocs(q);
+      const ratingDocRef = doc(db, "ratings", currentUser.uid);
+      await setDoc(ratingDocRef, {
+        rating: selectedRating,
+        uid: currentUser.uid,
+        timestamp: new Date(),
+      });
 
-  if (!snapshot.empty) {const docId = snapshot.docs[0].id;
-    const ratingDocRef = doc(db, "ratings", docId);
-    await setDoc(ratingDocRef, {
-      rating: selectedRating,
-      uid: currentUser.uid,
-      timestamp: new Date(),
-    });
-    alert("평점이 변경되었습니다.");
-  } else {
-    // 새 평점 등록
-    await addDoc(ratingsRef, {
-      rating: selectedRating,
-      uid: currentUser.uid,
-      timestamp: new Date(),
-    });
-    alert("평점이 저장되었습니다!");
-  }
+      alert("평점이 저장되었습니다!");
+      calculateAverageRating();
+    }
 
-    // 평균 평점 계산
+    // 평균 평점 계산 함수
     async function calculateAverageRating() {
       const ratingsRef = collection(db, "ratings");
       const snapshot = await getDocs(ratingsRef);
-      const latestRatingsByUser = new Map(); // uid → rating
+
+      let sum = 0;
+      let count = 0;
 
       snapshot.forEach((doc) => {
         const data = doc.data();
-        const uid = data.uid;
-        const timestamp = data.timestamp ? data.timestamp.toMillis() : 0; // Firestore timestamp to ms
-        if (!latestRatingsByUser.has(uid) || latestRatingsByUser.get(uid).timestamp < timestamp) {
-          latestRatingsByUser.set(uid, { rating: data.rating, timestamp });
-        }
+        sum += data.rating;
+        count++;
       });
 
-  let sum = 0;
-  let count = 0;
-  latestRatingsByUser.forEach(({ rating }) => {
-    sum += rating;
-    count++;
-  });
+      const avg = count === 0 ? 0 : (sum / count).toFixed(1);
+      document.getElementById("avgRating").innerText = `현재 평균 평점: ${avg}점`;
+    }
 
-  const avg = count === 0 ? 0 : (sum / count).toFixed(1);
-  document.getElementById("avgRating").innerText = `현재 평균 평점: ${avg}점`;
-}
-
-
-function updateStarDisplay(rating) {
-  stars.forEach((star) => {
-    star.textContent = parseInt(star.dataset.value) <= rating ? '★' : '☆';
-  });
-}
-
-      document.getElementById("signUpBtn").onclick = signUp;
-      document.getElementById("signInBtn").onclick = signIn;
-      document.getElementById("signOutBtn").onclick = signOutUser;
-
-      document.getElementById("postCreateBtn").onclick = createPost;
-      document.getElementById("commentForm").addEventListener("submit", submitComment);
-      document.getElementById("ratingSubmit").onclick = submitRating;
-    };
-    // 메뉴 불러오기
-    fetch('menu.html')
-    .then(response => response.text())
-    .then(html => {
-      document.getElementById('menuContainer').innerHTML = html;
-
-      const menuToggle = document.querySelector('.menu-toggle');
-      const sideMenu = document.getElementById('sideMenu');
-
-      menuToggle.addEventListener('click', () => {
-        if (sideMenu.style.display === 'flex') {
-          sideMenu.style.display = 'none';
-        } else {
-          sideMenu.style.display = 'flex';
-        }
-      });
-
-      document.querySelectorAll('.toggle-btn').forEach(btn => {
-        btn.addEventListener('click', e => {
-          e.preventDefault();
-          const targetId = btn.dataset.target;
-          const submenu = document.getElementById(targetId);
-          if (submenu.style.display === 'flex') {
-            submenu.style.display = 'none';
-            btn.textContent = '+';
-          } else {
-            submenu.style.display = 'flex';
-            btn.textContent = '−';
-          }
-        });
-      });
-    })
-    .catch(err => {
-      console.error('메뉴를 불러오는 중 오류 발생:', err);
-    });
   </script>
 </head>
 <body>
-  <div id='menuContainer'></div>
-  <header>
-    <div class="logo">괴담지옥</div>
-    <div id="userStatus">로그인 필요</div>
-  </header>
+  <h1>커뮤니티 | 괴담지옥</h1>
+  <p id="userStatus">로그인 필요</p>
 
-  <main>
-    <h1>💬 커뮤니티</h1>
-    <p>자유 게시판, 인기 글 모음</p>
+  <div id="authSection">
+    <input type="email" id="email" placeholder="이메일" />
+    <input type="password" id="password" placeholder="비밀번호" />
+    <input type="text" id="nickname" placeholder="닉네임 (회원가입 시만)" />
+    <button onclick="signUp()">회원가입</button>
+    <button onclick="signIn()">로그인</button>
+  </div>
 
-    <section id="authSection">
-      <h2>회원가입 / 로그인</h2>
-      <input type="email" id="email" placeholder="이메일" />
-      <input type="password" id="password" placeholder="비밀번호" />
-      <input type="text" id="nickname" placeholder="닉네임" />
-      <button id="signUpBtn">회원가입</button>
-      <button id="signInBtn">로그인</button>
-    </section>
+  <button onclick="signOutUser()">로그아웃</button>
 
-    <section id="postSection" style="display:none;">
-      <h2>새 글 작성</h2>
-      <input type="text" id="title" placeholder="제목" /><br />
-      <textarea id="content" placeholder="내용"></textarea><br />
-      <button id="postCreateBtn">작성</button>
+  <section id="postSection" style="display:none;">
+    <h2>게시글 작성</h2>
+    <input type="text" id="title" placeholder="제목" />
+    <textarea id="content" placeholder="내용"></textarea>
+    <button onclick="createPost()">작성</button>
 
-      <h2>게시글 목록</h2>
-      <ul id="postList"></ul>
+    <h2>게시글 목록</h2>
+    <ul id="postList"></ul>
+  </section>
 
-      <h2>댓글</h2>
-      <form id="commentForm">
-        <textarea id="comment" placeholder="댓글 입력" required></textarea>
-        <button type="submit">댓글 달기</button>
-      </form>
-      <ul id="commentList"></ul>
+  <section id="commentSection" style="display:none;">
+    <h2>댓글</h2>
+    <form id="commentForm" onsubmit="submitComment(event)">
+      <input type="text" id="comment" placeholder="댓글 작성" />
+      <button type="submit">댓글 등록</button>
+    </form>
+    <ul id="commentList"></ul>
+  </section>
 
-      <h2>평점 남기기</h2>
-      <div id="starRating" style="font-size: 2rem; cursor: pointer;">
-        <span data-value="1">☆</span>
-        <span data-value="2">☆</span>
-        <span data-value="3">☆</span>
-        <span data-value="4">☆</span>
-        <span data-value="5">☆</span>
-      </div>
-      <button id="ratingSubmit">평점 제출</button>
-      <p id="avgRating">현재 평균 평점: 0점</p>
+  <section id="ratingSection" style="display:none;">
+    <h2>평점 주기</h2>
+    <div id="starRating" style="font-size: 2em; cursor:pointer;">
+      <span data-value="1">☆</span>
+      <span data-value="2">☆</span>
+      <span data-value="3">☆</span>
+      <span data-value="4">☆</span>
+      <span data-value="5">☆</span>
+    </div>
+    <button onclick="submitRating()">평점 제출</button>
+    <p id="avgRating">현재 평균 평점: 0점</p>
+  </section>
 
-
-      <button id="signOutBtn">로그아웃</button>
-    </section>
-  </main>
-
-  <footer>&copy; 2025 괴담지옥</footer>
+  <script>
+    // 로그인 상태에 따라 댓글, 평점 섹션 노출 처리
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        document.getElementById("commentSection").style.display = "block";
+        document.getElementById("ratingSection").style.display = "block";
+      } else {
+        document.getElementById("commentSection").style.display = "none";
+        document.getElementById("ratingSection").style.display = "none";
+      }
+    });
+  </script>
 </body>
 </html>
