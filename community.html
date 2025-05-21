@@ -293,7 +293,7 @@ async function deleteComment(commentId) {
       const snapshot = await getDocs(q);
 
       if (!snapshot.empty) {
-        alert("이미 평점을 등록하셨습니다. 평점 변경은 아직 지원하지 않습니다.");
+        alert("이미 평점을 등록하셨습니다.");
         return;
       }
 
