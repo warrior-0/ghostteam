@@ -313,24 +313,28 @@ async function submitRating() {
     async function calculateAverageRating() {
       const ratingsRef = collection(db, "ratings");
       const snapshot = await getDocs(ratingsRef);
-      let sum = 0;
-      let count = 0;
+      const latestRatingsByUser = new Map(); // uid → rating
+
       snapshot.forEach((doc) => {
-        sum += doc.data().rating;
-        count++;
+        const data = doc.data();
+        const uid = data.uid;
+        const timestamp = data.timestamp ? data.timestamp.toMillis() : 0; // Firestore timestamp to ms
+        if (!latestRatingsByUser.has(uid) || latestRatingsByUser.get(uid).timestamp < timestamp) {
+          latestRatingsByUser.set(uid, { rating: data.rating, timestamp });
+        }
       });
-      const avg = count === 0 ? 0 : (sum / count).toFixed(1);
-      document.getElementById("avgRating").innerText = `현재 평균 평점: ${avg}점`;
-    }
-  let selectedRating = 0;
-    window.onload = () => {
-      const stars = document.querySelectorAll('#starRating span');
-      stars.forEach((star) => {
-        star.addEventListener('click', () => {
-          selectedRating = parseInt(star.dataset.value);
-          updateStarDisplay(selectedRating);
-        });
-      });
+
+  let sum = 0;
+  let count = 0;
+  latestRatingsByUser.forEach(({ rating }) => {
+    sum += rating;
+    count++;
+  });
+
+  const avg = count === 0 ? 0 : (sum / count).toFixed(1);
+  document.getElementById("avgRating").innerText = `현재 평균 평점: ${avg}점`;
+}
+
 
 function updateStarDisplay(rating) {
   stars.forEach((star) => {
