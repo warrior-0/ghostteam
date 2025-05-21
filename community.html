@@ -309,19 +309,6 @@ async function submitRating() {
     alert("평점이 저장되었습니다!");
   }
 
-  await addDoc(ratingsRef, {
-    rating: selectedRating,
-    uid: currentUser.uid,
-    timestamp: new Date(),
-  });
-
-  alert("평점이 저장되었습니다!");
-  selectedRating = 0;
-  updateStarDisplay(0);
-  calculateAverageRating();
-}
-
-
     // 평균 평점 계산
     async function calculateAverageRating() {
       const ratingsRef = collection(db, "ratings");
