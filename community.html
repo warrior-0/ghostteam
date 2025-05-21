@@ -314,20 +314,19 @@ async function submitRating() {
   document.getElementById("rating").value = "";
   await calculateAverageRating();
 }
-
-
-    import { onSnapshot, collection } from "firebase/firestore";
-const ratingsRef = collection(db, "ratings");
-onSnapshot(ratingsRef, (snapshot) => {
-  let sum = 0;
-  let count = 0;
-  snapshot.forEach((doc) => {
-    sum += doc.data().rating;
-    count++;
-  });
-  const avg = count === 0 ? 0 : (sum / count).toFixed(1);
-  document.getElementById("avgRating").innerText = `현재 평균 평점: ${avg}점`;
-});
+// 평균 평점 계산
+    async function calculateAverageRating() {
+      const ratingsRef = collection(db, "ratings");
+      const snapshot = await getDocs(ratingsRef);
+      let sum = 0;
+      let count = 0;
+      snapshot.forEach((doc) => {
+        sum += doc.data().rating;
+        count++;
+      });
+      const avg = count === 0 ? 0 : (sum / count).toFixed(1);
+      document.getElementById("avgRating").innerText = `현재 평균 평점: ${avg}점`;
+    }
 let selectedRating = 0;
     window.onload = () => {
       const stars = document.querySelectorAll("#starRating .star");
