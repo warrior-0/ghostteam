@@ -281,9 +281,8 @@ async function deleteComment(commentId) {
         alert("로그인 후 평점 제출 가능합니다.");
         return;
       }
-      const ratingValue = parseFloat(document.getElementById("rating").value);
-      if (isNaN(ratingValue) || ratingValue < 1 || ratingValue > 5) {
-        alert("1~5점 중에서 별점을 선택해주세요");
+      if (selectedRating < 1 || selectedRating > 5) {
+        alert("1~5점 중에서 별점을 선택해주세요.");
         return;
       }
 
