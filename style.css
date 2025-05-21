@@ -28,6 +28,18 @@ textarea:focus {
   box-shadow: 0 0 12px rgba(255, 50, 50, 0.7);
 }
 
+input[type="password"]:focus,
+textarea:focus {
+  outline: none;
+  box-shadow: 0 0 12px rgba(255, 50, 50, 0.7);
+}
+
+input[type="email"]:focus,
+textarea:focus {
+  outline: none;
+  box-shadow: 0 0 12px rgba(255, 50, 50, 0.7);
+}
+
 textarea {
   height: 120px;
   resize: vertical;
