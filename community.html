@@ -275,7 +275,7 @@ async function deleteComment(commentId) {
   }
 }
 
-    // 평점 제출 (한 계정당 1회 제한)
+// 평점 제출 (한 계정당 1회 제한)
 async function submitRating() {
   if (!currentUser) {
     alert("로그인 후 평점 제출 가능합니다.");
@@ -291,9 +291,22 @@ async function submitRating() {
   const q = query(ratingsRef, where("uid", "==", currentUser.uid));
   const snapshot = await getDocs(q);
 
-  if (!snapshot.empty) {
-    alert("이미 평점을 등록하셨습니다. 평점 변경은 아직 지원하지 않습니다.");
-    return;
+  if (!snapshot.empty) {const docId = snapshot.docs[0].id;
+    const ratingDocRef = doc(db, "ratings", docId);
+    await setDoc(ratingDocRef, {
+      rating: selectedRating,
+      uid: currentUser.uid,
+      timestamp: new Date(),
+    });
+    alert("평점이 변경되었습니다.");
+  } else {
+    // 새 평점 등록
+    await addDoc(ratingsRef, {
+      rating: selectedRating,
+      uid: currentUser.uid,
+      timestamp: new Date(),
+    });
+    alert("평점이 저장되었습니다!");
   }
 
   await addDoc(ratingsRef, {
