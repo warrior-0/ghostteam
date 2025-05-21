@@ -1,1 +1,39 @@
+<!DOCTYPE html>
+<html lang='ko'>
+<head><meta charset='UTF-8'><title>문의 | 괴담지옥</title><link rel='stylesheet' href='style.css'></head>
+<body>
+<div id='menuContainer'></div>
+<header><div class='logo'>괴담지옥</div></header>
+<main><h1>문의하기</h1><p>문의할 내용을 적어주세요</p></main>
+<footer>&copy; 2025 괴담지옥</footer>
+<script>
+// 메뉴 불러오기
+fetch('menu.html')
+  .then(response => response.text())
+  .then(html => {
+    document.getElementById('menuContainer').innerHTML = html;
 
+    // 햄버거 메뉴 토글
+    const menuToggle = document.querySelector('.menu-toggle');
+    const sideMenu = document.getElementById('sideMenu');
+
+    menuToggle.addEventListener('click', () => {
+      sideMenu.style.display = sideMenu.style.display === 'flex' ? 'none' : 'flex';
+    });
+
+    // 하위 메뉴 토글
+    document.querySelectorAll('.toggle-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const targetId = btn.dataset.target;
+        const submenu = document.getElementById(targetId);
+        const isOpen = submenu.style.display === 'flex';
+
+        submenu.style.display = isOpen ? 'none' : 'flex';
+        btn.textContent = isOpen ? '+' : '−';
+      });
+    });
+  });
+
+</script>
+</body>
+</html>
