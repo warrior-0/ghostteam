@@ -318,7 +318,7 @@ async function submitRating() {
 
     // 평균 평점 계산
     async function calculateAverageRating() {
-      const ratingsRef = collection(db, "ratings");
+      const ratingsRef = selectedRating;
       const snapshot = await getDocs(ratingsRef);
       let sum = 0;
       let count = 0;
