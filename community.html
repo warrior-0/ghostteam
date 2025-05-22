@@ -117,8 +117,8 @@
         const data = doc.data();
         const item = document.createElement("li");
         item.innerHTML = `
-          <strong>${data.title}</strong> - 작성자: ${data.authorname || "익명"}
-          <p>${data.content}</p>
+          <a href="post.html?id=${doc.id}"><strong>${data.title}</strong></a>
+          - 작성자: ${data.authorname || "익명"}
         `;
         if (currentUser && data.authorUid === currentUser.uid) {
           const editBtn = document.createElement("button");
