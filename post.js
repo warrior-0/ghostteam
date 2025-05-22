@@ -3,7 +3,13 @@ import { getFirestore, doc, getDoc, collection, addDoc, query, where, orderBy, g
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
 const firebaseConfig = {
-  
+  apiKey: "AIzaSyAjHwHbHlCi4vgv-Ma0-3kqt-M3SLI_oF4",
+      authDomain: "ghost-38f07.firebaseapp.com",
+      projectId: "ghost-38f07",
+      storageBucket: "ghost-38f07.firebasestorage.app",
+      messagingSenderId: "776945022976",
+      appId: "1:776945022976:web:105e545d39f12b5d0940e5",
+      measurementId: "G-B758ZC971V"
 };
 
 const app = initializeApp(firebaseConfig);
