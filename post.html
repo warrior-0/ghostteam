@@ -27,8 +27,9 @@
     </section>
   </main>
   <footer>&copy; 2025 괴담지옥</footer>
-  <script type="module" src="post.js">
-    //메뉴 불러오기
+  <script type="module" src="post.js"></script>
+  <script type="module">
+//메뉴 불러오기
 fetch('menu.html')
   .then(response => response.text())
   .then(html => {
@@ -54,6 +55,6 @@ fetch('menu.html')
       });
     });
   });
-  </script>
+</script>
 </body>
 </html>
