@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>게시글 | 괴담지옥</title>
+  <link rel="stylesheet" href="style.css" />
+  <!-- Firebase SDK import (community.html과 동일, 모듈 또는 <script> 방식 선택) -->
+</head>
+<body>
+  <div id="menuContainer"></div>
+  <header>
+    <div class="logo">괴담지옥</div>
+  </header>
+  <main>
+    <h1 id="postTitle"></h1>
+    <p id="postContent"></p>
+    <div id="likeSection">
+      <button id="likeBtn">좋아요</button> <span id="likeCount">0</span>명
+    </div>
+    <section id="comments">
+      <h2>댓글</h2>
+      <ul id="commentList"></ul>
+      <form id="commentForm">
+        <textarea id="commentInput" required placeholder="댓글 입력"></textarea>
+        <button type="submit">댓글 달기</button>
+      </form>
+    </section>
+  </main>
+  <footer>&copy; 2025 괴담지옥</footer>
+  <script type="module" src="post.js"></script>
+</body>
+</html>
