@@ -131,13 +131,6 @@ onAuthStateChanged(auth, (user) => {
   });
 });
 
-// 메뉴 불러오기 (중복 없이 한 번만)
-fetch('menu.html')
-  .then(response => response.text())
-  .then(html => {
-    document.getElementById('menuContainer').innerHTML = html;
-  });
-
 // 페이지 로딩 시 데이터 불러오기
 window.onload = async () => {
   await loadPost();
