@@ -146,6 +146,5 @@ onAuthStateChanged(auth, (user) => {
 // 페이지 로딩 시 데이터 불러오기
 window.onload = async () => {
   await loadPost();
-  await loadComments();
   await updateLikeCount();
 };
