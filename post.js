@@ -76,6 +76,31 @@ async function loadComments() {
   }
 }
 
+// 댓글 수정 함수
+function editComment(commentId, c) {
+  const newComment = prompt("댓글을 수정하세요", c.comment);
+  if (newComment !== null && newComment.trim() !== "") {
+    const commentRef = doc(db, "posts", postId, "comments", commentId);
+    setDoc(commentRef, { ...c, comment: newComment }, { merge: true })
+      .then(() => {
+        alert("댓글이 수정되었습니다.");
+        loadComments();
+      });
+  }
+}
+
+// 댓글 삭제 함수
+function deleteComment(commentId) {
+  if (confirm("정말로 이 댓글을 삭제하시겠습니까?")) {
+    const commentRef = doc(db, "posts", postId, "comments", commentId);
+    deleteDoc(commentRef)
+      .then(() => {
+        alert("댓글이 삭제되었습니다.");
+        loadComments();
+      });
+  }
+}
+
 async function updateLikeCount() {
   try {
     const likesCol = collection(db, "posts", postId, "likes");
