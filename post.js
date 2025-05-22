@@ -66,7 +66,7 @@ async function loadComments() {
         const delBtn = document.createElement("button");
         delBtn.textContent = "삭제";
         delBtn.className = "comment-action-btn";
-        delBtn.onclick = () => deleteComment(docSnap.id,c);
+        delBtn.onclick = () => deleteComment(docSnap.id);
         li.appendChild(delBtn);
       }
       list.appendChild(li);
