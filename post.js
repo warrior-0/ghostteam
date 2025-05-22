@@ -44,6 +44,7 @@ async function loadPost() {
 
 async function loadComments() {
   try {
+    const user = auth.currentUser;
     const commentsRef = collection(db, "posts", postId, "comments");
     const q = query(commentsRef, orderBy("timestamp", "asc"));
     const snapshot = await getDocs(q);
@@ -53,6 +54,16 @@ async function loadComments() {
       const c = docSnap.data();
       const li = document.createElement("li");
       li.innerHTML = `<strong>${c.authorname || "익명"}</strong>: ${c.comment}`;
+      if (user && c.uid === user.uid) {
+        const editBtn = document.createElement("button");
+        editBtn.textContent = "수정";
+        editBtn.onclick = () => editComment(docSnap.id, c);
+        li.appendChild(editBtn);
+
+        const delBtn = document.createElement("button");
+        delBtn.textContent = "삭제";
+        delBtn.onclick = () => deleteComment(docSnap.id);
+        li.appendChild(delBtn);
       list.appendChild(li);
     });
   } catch (err) {
