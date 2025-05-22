@@ -64,6 +64,7 @@ async function loadComments() {
         delBtn.textContent = "삭제";
         delBtn.onclick = () => deleteComment(docSnap.id);
         li.appendChild(delBtn);
+      }
       list.appendChild(li);
     });
   } catch (err) {
