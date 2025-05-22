@@ -44,6 +44,7 @@ async function loadPost() {
 
 async function loadComments() {
   try {
+    // 항상 최신 로그인 상태의 유저 정보를 사용해야 함
     const user = auth.currentUser;
     const commentsRef = collection(db, "posts", postId, "comments");
     const q = query(commentsRef, orderBy("timestamp", "asc"));
@@ -54,14 +55,17 @@ async function loadComments() {
       const c = docSnap.data();
       const li = document.createElement("li");
       li.innerHTML = `<strong>${c.authorname || "익명"}</strong>: ${c.comment}`;
+      // 본인 댓글이면 수정/삭제 버튼 추가
       if (user && c.uid === user.uid) {
         const editBtn = document.createElement("button");
         editBtn.textContent = "수정";
+        editBtn.className = "comment-action-btn";
         editBtn.onclick = () => editComment(docSnap.id, c);
         li.appendChild(editBtn);
 
         const delBtn = document.createElement("button");
         delBtn.textContent = "삭제";
+        delBtn.className = "comment-action-btn";
         delBtn.onclick = () => deleteComment(docSnap.id);
         li.appendChild(delBtn);
       }
