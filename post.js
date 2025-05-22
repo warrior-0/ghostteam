@@ -97,10 +97,6 @@ function deleteComment(commentId) {
       .then(() => {
         alert("댓글이 삭제되었습니다.");
         loadComments();
-      })
-      .catch((err) => {
-        alert("댓글 삭제 오류: " + err.message);
-        console.error(err);
       });
   }
 }
