@@ -1,39 +1,73 @@
 <!DOCTYPE html>
-<html lang='ko'>
-<head><meta charset='UTF-8'><title>정보 | 괴담지옥</title><link rel='stylesheet' href='style.css'></head>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>정보 | 괴담지옥</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="main.js" defer></script>
+  <script src="about.js" defer></script>
+</head>
 <body>
-<div id='menuContainer'></div>
-<header><div class='logo'>괴담지옥</div></header>
-<main><h1>🔎 사이트 정보</h1><p>운영자 인사말 및 문의처 안내.</p></main>
-<footer>&copy; 2025 괴담지옥</footer>
-<script>
-// 메뉴 불러오기
-fetch('menu.html')
-  .then(response => response.text())
-  .then(html => {
-    document.getElementById('menuContainer').innerHTML = html;
+  <header>
+    <div class="header-inner">
+      <div style="display: flex; align-items: center;">
+        <div id="menuContainer"></div>
+        <a href="index.html" class="logo">괴담지옥</a>
+        <nav>
+          <ul class="gnb">
+            <li><a href="index.html">홈</a></li>
+            <li id="urbanMenu">
+              <div class="dropdown" tabindex="0">
+                <a href="urban.html">괴담</a>
+                <span class="dropdown-arrow">&#9660;</span>
+              </div>
+              <div class="submenu">
+                <a href="urban.html?filter=all">전체 괴담 모음</a>
+                <a href="urban.html?filter=korea">한국 괴담</a>
+                <a href="urban.html?filter=foreign">해외 괴담</a>
+                <a href="urban.html?filter=true">실화 이야기</a>
+                <a href="urban.html?filter=user">사용자 제보 괴담</a>
+              </div>
+            </li>
+            <li id="communityMenu">
+              <div class="dropdown" tabindex="0">
+                <a href="community.html">커뮤니티</a>
+                <span class="dropdown-arrow">&#9660;</span>
+              </div>
+              <div class="submenu">
+                <a href="community.html?board=free">자유게시판</a>
+                <a href="community.html?board=notice">이벤트/공지</a>
+                <a href="community.html?board=archive">자료실</a>
+              </div>
+            </li>
+            <li id="aboutMenu">
+              <div class="dropdown" tabindex="0">
+                <a href="about.html">정보</a>
+                <span class="dropdown-arrow">&#9660;</span>
+              </div>
+              <div class="submenu">
+                <a href="about.html?page=intro">사이트 소개</a>
+                <a href="about.html?page=greeting">운영자 인사말</a>
+                <a href="about.html?page=contact">문의/제보하기</a>
+              </div>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </header>
 
-    // 햄버거 메뉴 토글
-    const menuToggle = document.querySelector('.menu-toggle');
-    const sideMenu = document.getElementById('sideMenu');
+  <main>
+    <section style="max-width: 900px; margin: 2.5rem auto; padding: 0 2rem;">
+      <div class="about-title" style="font-size:2rem;font-weight:bold;margin-bottom:1rem;">정보 페이지</div>
+      <div id="aboutContent" style="line-height:1.8;color:#ddd;font-size:1.05rem;">
+        <!-- 내용이 JS로 로딩됩니다 -->
+      </div>
+    </section>
+  </main>
 
-    menuToggle.addEventListener('click', () => {
-      sideMenu.style.display = sideMenu.style.display === 'flex' ? 'none' : 'flex';
-    });
-
-    // 하위 메뉴 토글
-    document.querySelectorAll('.toggle-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const targetId = btn.dataset.target;
-        const submenu = document.getElementById(targetId);
-        const isOpen = submenu.style.display === 'flex';
-
-        submenu.style.display = isOpen ? 'none' : 'flex';
-        btn.textContent = isOpen ? '+' : '−';
-      });
-    });
-  });
-
-</script>
+  <footer>
+    &copy; 2025 괴담지옥. All rights reserved.
+  </footer>
 </body>
 </html>
